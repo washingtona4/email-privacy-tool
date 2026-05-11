@@ -1,0 +1,99 @@
+{
+  "provider": "gmail",
+  "phase": "tracker_test",
+  "total_requests": 1084,
+  "unique_domains": 40,
+  "third_party_domains": [
+    "2507573.fls.doubleclick.net",
+    "accounts.youtube.com",
+    "ad.doubleclick.net",
+    "ci3.googleusercontent.com",
+    "csp.withgoogle.com",
+    "googleads.g.doubleclick.net",
+    "img.youtube.com",
+    "lh3.googleusercontent.com",
+    "ssl.google-analytics.com",
+    "stats.g.doubleclick.net",
+    "www.googleadservices.com",
+    "www.googletagmanager.com",
+    "www.youtube.com"
+  ],
+  "by_category": {
+    "first_party": 1039,
+    "known_tracker": 39,
+    "unknown_third_party": 6
+  },
+  "advertising_domains": [],
+  "analytics_domains": [],
+  "unknown_third_party_domains": [
+    "2507573.fls.doubleclick.net",
+    "ad.doubleclick.net",
+    "csp.withgoogle.com",
+    "googleads.g.doubleclick.net",
+    "stats.g.doubleclick.net"
+  ],
+  "email_leaks": [
+    {
+      "host": "mail.google.com",
+      "path": "/sync/u/0/i/s?hl=en&c=4&rt=r&pt=ji",
+      "emails_found": [
+        "QDx0f-k8PjThvrEdVNQJwQ@notifications.google.com",
+        "se82N-hIQDMUSOWn6XEf2A@notifications.google.com",
+        "rlXcIGKkRZBUCY3ukhKO9g@notifications.google.com"
+      ]
+    },
+    {
+      "host": "peoplestack-pa.clients6.google.com",
+      "path": "/$rpc/peoplestack.PeopleStackAutocompleteService/Lookup",
+      "emails_found": [
+        "nickwashi24@gmail.com"
+      ]
+    },
+    {
+      "host": "mail.google.com",
+      "path": "/sync/u/0/i/s?hl=en&c=8&rt=r&pt=ji",
+      "emails_found": [
+        "3_7GE-Qfsdj56pC-u2Bt-O1ydc9VYEDg@mail.gmail.com"
+      ]
+    },
+    {
+      "host": "mail.google.com",
+      "path": "/sync/u/0/i/s?hl=en&c=10&rt=r&pt=ji",
+      "emails_found": [
+        "3_7GE-Qfsdj56pC-u2Bt-O1ydc9VYEDg@mail.gmail.com"
+      ]
+    },
+    {
+      "host": "mail.google.com",
+      "path": "/sync/u/0/i/s?hl=en&c=14&rt=r&pt=ji",
+      "emails_found": [
+        "3_7GE-Qfsdj56pC-u2Bt-O1ydc9VYEDg@mail.gmail.com"
+      ]
+    },
+    {
+      "host": "peoplestack-pa.clients6.google.com",
+      "path": "/$rpc/peoplestack.PeopleStackAutocompleteService/Lookup",
+      "emails_found": [
+        "noreply@canarytokens.org"
+      ]
+    },
+    {
+      "host": "mail.google.com",
+      "path": "/sync/u/0/i/s?hl=en&c=15&rt=r&pt=ji",
+      "emails_found": [
+        "20260531162750.4efe4ee6c9894cba@canarytokens.org",
+        "20260531163220.9c8ebf701e6ea1b3@canarytokens.org"
+      ]
+    },
+    {
+      "host": "mail.google.com",
+      "path": "/sync/u/0/i/s?hl=en&c=16&rt=r&pt=ji",
+      "emails_found": [
+        "20260531162750.4efe4ee6c9894cba@canarytokens.org",
+        "20260531163220.9c8ebf701e6ea1b3@canarytokens.org"
+      ]
+    }
+  ],
+  "email_leak_count": 8,
+  "browser_noise_requests_filtered": 111
+}
