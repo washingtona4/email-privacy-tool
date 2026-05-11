@@ -8,8 +8,8 @@ from mitmproxy import http
 class EmailPrivacyLogger:
     def __init__(self):
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        os.makedirs("output", exist_ok=True)
-        self.csv_path = f"output/capture_{timestamp}.csv"
+        os.makedirs(os.environ.get('OUTPUT_DIR', 'output'), exist_ok=True)
+        self.csv_path = f"{os.environ.get('OUTPUT_DIR', 'output')}/capture_{timestamp}.csv"
         self.columns = [
             "timestamp",
             "method",
