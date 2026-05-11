@@ -1,45 +1,27 @@
 {
   "provider": "gmail",
   "phase": "account_creation",
-  "total_requests": 558,
-  "unique_domains": 41,
+  "total_requests": 498,
+  "unique_domains": 30,
   "third_party_domains": [
     "accounts.youtube.com",
     "ad.doubleclick.net",
-    "ads-img.mozilla.org",
-    "ads.mozilla.org",
-    "content-signature-2.cdn.mozilla.net",
-    "detectportal.firefox.com",
-    "firefox-settings-attachments.cdn.mozilla.net",
-    "firefox.settings.services.mozilla.com",
     "googleads.g.doubleclick.net",
-    "incoming.telemetry.mozilla.org",
     "lh3.googleusercontent.com",
-    "location.services.mozilla.com",
-    "mozilla-ohttp.fastly-edge.com",
-    "prod.ohttp-gateway.prod.webservices.mozgcp.net",
-    "push.services.mozilla.com",
     "www.googleadservices.com"
   ],
   "by_category": {
     "first_party": 485,
-    "unknown_third_party": 46,
-    "known_tracker": 27
+    "known_tracker": 8,
+    "unknown_third_party": 5
   },
   "advertising_domains": [],
   "analytics_domains": [],
   "unknown_third_party_domains": [
     "ad.doubleclick.net",
-    "content-signature-2.cdn.mozilla.net",
-    "detectportal.firefox.com",
-    "firefox-settings-attachments.cdn.mozilla.net",
-    "firefox.settings.services.mozilla.com",
-    "googleads.g.doubleclick.net",
-    "location.services.mozilla.com",
-    "mozilla-ohttp.fastly-edge.com",
-    "prod.ohttp-gateway.prod.webservices.mozgcp.net",
-    "push.services.mozilla.com"
+    "googleads.g.doubleclick.net"
   ],
   "email_leaks": [],
-  "email_leak_count": 0
+  "email_leak_count": 0,
+  "browser_noise_requests_filtered": 60
 }
