@@ -1,0 +1,40 @@
+providers:
+  gmail:
+    name: Gmail
+    first_party_domains:
+      - google.com
+      - googleapis.com
+      - gstatic.com
+      - gmail.com
+    assigned_to: Andre
+
+  outlook:
+    name: Outlook
+    first_party_domains:
+      - microsoft.com
+      - live.com
+      - office.com
+      - microsoftonline.com
+    assigned_to: Daniel
+
+  protonmail:
+    name: ProtonMail
+    first_party_domains:
+      - proton.me
+      - protonmail.com
+      - protonstatic.com
+    assigned_to: Rishi
+
+  tutanota:
+    name: Tutanota
+    first_party_domains:
+      - tutanota.com
+      - tutanota.de
+      - tutamail.com
+    assigned_to: Ryan
+
+phases:
+  - account_creation
+  - idle
+  - active_usage
+  - tracker_test
