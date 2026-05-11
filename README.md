@@ -43,7 +43,7 @@ After each experiment, the analysis scripts classify every domain contacted, fla
 
 ## Quick Start for Teammates
 
-**The `.ova` file has already been set up, skip the entire VM Setup section.** Just do this:
+**The `.ova` file has already been set up — skip the entire VM Setup section.** Just do this:
 
 1. Download and install VirtualBox from https://www.virtualbox.org — choose **macOS / Apple Silicon hosts** if you have an M1/M2/M3/M4 Mac
 2. Download `email-privacy-vm.ova` from the team Google Drive
@@ -67,7 +67,7 @@ After each experiment, the analysis scripts classify every domain contacted, fla
 
 ## VM Setup
 
-> **Skip this section if you received the `.ova` file from a teammate.** This section is only for the person doing the initial setup from scratch.
+> **Skip this section if you received the `.ova` file from Andre.** This section is only for the person doing the initial setup from scratch.
 
 Do this once. When complete, export the VM as `.ova` and share it with the team so everyone starts from an identical environment.
 
@@ -79,12 +79,14 @@ Go to https://www.virtualbox.org and download the installer for your operating s
 ### Step 2: Download Ubuntu
 Go to https://ubuntu.com/download/desktop and download Ubuntu. Select the **ARM 64-bit** version if you are on Apple Silicon. The file is around 4GB so start this download early.
 
+> Do not double-click the ISO file on your Mac — it will fail to open. Just leave it in your Downloads folder and point VirtualBox to it in the next step.
+
 ### Step 3: Create the VM
 - Open VirtualBox and click **New**
 - Name it `email-privacy-vm`
-- Select the Ubuntu ISO you downloaded as the boot disk
+- Click the ISO Image dropdown and select the Ubuntu ISO from your Downloads folder
 - VirtualBox will auto-detect Ubuntu and enable unattended installation
-- Set username and password when prompted — remember the password, you will need it
+- Set username to `vboxuser` and set a password — share this password with the team
 - Assign at least **8GB RAM** and **4 CPU cores** (Firefox becomes unusably slow with less)
 - Set disk size to **25GB**
 - Click Finish and let Ubuntu install automatically — this takes 10-20 minutes
@@ -156,12 +158,13 @@ chmod +x setup.sh
 ./setup.sh
 ```
 
-> **GitHub authentication note:** When cloning, use your GitHub username and a Personal Access Token as the password — not your GitHub account password. Generate one at GitHub → Settings → Developer Settings → Personal Access Tokens → Tokens (classic) → check the **repo** scope → Generate.
+> **GitHub authentication note:** When cloning, use your GitHub username and a Personal Access Token as the password — not your GitHub account password. Generate one at GitHub → Settings → Developer Settings → Personal Access Tokens → Tokens (classic) → check the **repo** scope → Generate. Copy the token immediately — you cannot see it again after leaving the page.
 
 ### Step 11: Take Your tool-installed Snapshot
 Before taking this snapshot:
 - Log out of any accounts in Firefox (Gmail, Claude, etc.)
 - Clear all browser history and cookies: Firefox Settings → Privacy & Security → Clear Data → check everything → Clear
+- Close the terminal
 
 Then in VirtualBox:
 - Go to **Machine → Take Snapshot**
@@ -186,14 +189,20 @@ You now have two snapshots:
 
 ## Running an Experiment
 
-Each team member runs experiments for their assigned provider across all four phases.
+Each team member creates a throwaway account on their assigned provider and runs all four phases.
 
-| Team Member | Provider | Phases |
+| Team Member | Provider | Throwaway Account Format |
 |---|---|---|
-| Andre | Gmail | account_creation, idle, active_usage, tracker_test |
-| Daniel | Outlook | account_creation, idle, active_usage, tracker_test |
-| Rishi | ProtonMail | account_creation, idle, active_usage, tracker_test |
-| Ryan | Tutanota | account_creation, idle, active_usage, tracker_test |
+| Andre | Gmail | eptest.gmail@gmail.com |
+| Daniel | Outlook | eptest.outlook@outlook.com |
+| Rishi | ProtonMail | eptest.protonmail@proton.me |
+| Ryan | Tutanota | eptest.tutanota@tutanota.com |
+
+**Shared receiving address for active_usage:** Use Andre's throwaway Gmail `eptest.gmail@gmail.com` as the destination for all outgoing test emails across all four providers. This keeps the receiving address consistent across all experiments.
+
+> **Note on ProtonMail and Tutanota sending to Gmail:** When ProtonMail or Tutanota sends to a Gmail address, the message leaves the encrypted environment because Gmail does not support PGP. This means end-to-end encryption only applies to messages sent between users of the same privacy-focused provider. This is itself a finding worth documenting.
+
+**Shared canary token for tracker_test:** Andre generates one shared Web Bug token at https://canarytokens.org and shares the URL with the team. Everyone uses the same token URL so the tracker test is identical across all four providers.
 
 ### Before Every Experiment Session
 1. **Restore the tool-installed snapshot** — Machine → Snapshots → right click `tool-installed` → Restore
@@ -217,36 +226,52 @@ You will be prompted for:
 
 Once the script starts, open Firefox and begin your experiment. Press **Ctrl+C** when done.
 
+To find your CSV file after the capture:
+```bash
+ls output/[provider]/[phase]/
+```
+Use the most recent timestamped file for analysis.
+
 ### Phase-Specific Instructions
 
 **account_creation** (~5 minutes)
-- Start the capture, then navigate to the provider's signup page
-- Complete the full account creation flow from landing on the signup page to the inbox fully loading
-- Stop the capture immediately once the inbox loads for the first time
-- Use a throwaway account — format: `eptest.[provider]@gmail.com`
+- Start the capture before loading the signup page
+- Navigate to the provider's signup page and complete the full signup flow
+- Use identical information across all providers: same fake name, same password format
+- Stop the capture immediately once the inbox fully loads for the first time
+- If the provider requires phone verification, complete it and include that traffic in the capture
 
 **idle** (exactly 15 minutes)
-- Log into the inbox, start the capture, then do absolutely nothing
-- Do not click, scroll, move the mouse, or interact with the page in any way
-- Set a timer and stop the capture after exactly 15 minutes
-- Every teammate must use the same 15-minute duration for results to be comparable
+- Log into the inbox first, then start the capture
+- Once the capture is running, do absolutely nothing — no clicking, no scrolling, no mouse movement
+- Set a timer for exactly 15 minutes
+- Stop the capture when the timer goes off
+- Every teammate must use the same 15-minute duration — do not vary this
 
 **active_usage** (~10 minutes)
-- Log into the inbox and start the capture
-- Compose a new email to the team's shared test account with subject line `TEST - [your name] - [date]`
+- Log into the inbox, then start the capture
+- Compose a new email to `eptest.gmail@gmail.com` with subject line `TEST - [your name] - [date]`
 - Send the email
-- Open a received email
+- Open a received email in your inbox
 - Reply to it
-- Stop the capture — do not do anything else
+- Stop the capture immediately after replying — do not browse around
 
 **tracker_test** (~5 minutes)
-- Go to https://canarytokens.org and generate a **Web Bug / URL** token
-- Compose an email and embed the token URL as an image tag in the body: `<img src="YOUR_TOKEN_URL">`
-- Send it to your own test inbox on the provider you are testing
+- Use the shared canary token URL provided by Andre
+- Log into your inbox, then start the capture
+- Compose a new email to yourself on the same provider
+- In the email body, add: `<img src="SHARED_CANARY_TOKEN_URL">`
+- Send it to your own test account on the provider you are testing
 - Open the email
 - Wait 30 seconds
 - Check whether the canary token fired — you will receive a notification if it loaded
 - Stop the capture
+- Note the result (fired / did not fire) in your commit message
+
+### If Something Goes Wrong Mid-Experiment
+- If Firefox crashes or the capture stops unexpectedly, discard the partial capture and start the entire phase over from a fresh snapshot restore
+- Do not try to combine two partial captures
+- If you accidentally interact with the page during idle, restart from a fresh snapshot restore
 
 ---
 
@@ -261,10 +286,10 @@ Run through this before every single capture session. Do not skip steps.
 [ ] No browser extensions installed or active in Firefox
 [ ] Not logged into any personal accounts in the browser
 [ ] Browser proxy is set to 127.0.0.1:8080
-[ ] start_capture.sh has been run with correct provider and phase selected
 [ ] VPN is turned OFF on your host machine
 [ ] No other applications running inside the VM
 [ ] You are on a stable network connection
+[ ] start_capture.sh has been run with correct provider and phase selected
 ```
 
 > **VPN note:** Always turn off any VPN on your host machine before running experiments. A VPN changes your apparent IP address and can cause providers to behave differently, which would make results incomparable across teammates.
@@ -273,8 +298,12 @@ Run through this before every single capture session. Do not skip steps.
 
 ## Running Analysis
 
-After completing a capture, run the analysis script. Replace the timestamp with your actual filename:
+After completing a capture, check which CSV was created:
+```bash
+ls output/[provider]/[phase]/
+```
 
+Then run the analysis script using the most recent timestamped CSV:
 ```bash
 python3 analysis/classifier.py \
   --input output/[provider]/[phase]/capture_[timestamp].csv \
@@ -337,11 +366,17 @@ Raw `.mitm` capture files are excluded from git automatically via `.gitignore`. 
 
 **Restore the snapshot before every experiment — no exceptions.** If you forget and run two experiments back to back without restoring, your second capture will contain leftover cookies and session data from the first, contaminating your results.
 
+**On the shared receiving address:** All active_usage emails go to `eptest.gmail@gmail.com` regardless of which provider you are testing. This keeps the destination consistent so the only variable is the sending provider.
+
+**On the shared canary token:** Everyone uses the same token URL for tracker_test. This ensures all four providers are tested against an identical tracking mechanism.
+
 **On browser extensions:** Do not install any extensions in the VM browser. Extensions generate their own network requests which will appear in your captures and contaminate results.
 
 **On Google's privacy policy:** Gmail does not have a standalone privacy policy. It falls under Google's unified policy at https://policies.google.com/privacy. This is itself a finding worth documenting. Check whether Outlook also falls under a unified Microsoft policy rather than an email-specific one.
 
 **On encryption verification:** When analyzing ProtonMail and Tutanota captures, message bodies should appear as unreadable ciphertext in mitmproxy even though you have the CA certificate installed. This is because their encryption happens inside the browser in JavaScript before data reaches mitmproxy. If you can read the message body in plaintext, their end-to-end encryption claim is false. Gmail and Outlook message content will be readable since they use TLS only.
+
+**On ProtonMail and Tutanota sending to Gmail:** End-to-end encryption only applies when both sender and recipient use the same provider. Sending to Gmail means the message is decrypted before delivery. Document this in your findings.
 
 **On domain classification:** The classifier will mark some domains as `unknown_third_party` when they do not appear in the EasyPrivacy or Disconnect lists. These require manual research. Add findings to `config/manual_classifications.yaml` so the whole team benefits.
 
