@@ -43,7 +43,7 @@ After each experiment, the analysis scripts classify every domain contacted, fla
 
 ## Quick Start for Teammates
 
-**If Andre has already sent you the `.ova` file, skip the entire VM Setup section.** Just do this:
+**The `.ova` file has already been set up, skip the entire VM Setup section.** Just do this:
 
 1. Download and install VirtualBox from https://www.virtualbox.org — choose **macOS / Apple Silicon hosts** if you have an M1/M2/M3/M4 Mac
 2. Download `email-privacy-vm.ova` from the team Google Drive
