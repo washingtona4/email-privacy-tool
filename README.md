@@ -205,13 +205,23 @@ Each team member creates a throwaway account on their assigned provider and runs
 **Shared canary token for tracker_test:** Andre generates one shared Web Bug token at https://canarytokens.org and shares the URL with the team. Everyone uses the same token URL so the tracker test is identical across all four providers.
 
 ### Before Every Experiment Session
-1. **Restore the tool-installed snapshot** — Machine → Snapshots → right click `tool-installed` → Restore
-2. Start the VM and log in
-3. Open a terminal and start mitmproxy:
+1. **Restore the tool-installed snapshot** — in VirtualBox go to the Snapshots tab, click `tool-installed`, click **Restore**
+2. When VirtualBox asks "Do you want to create a snapshot of the current state before restoring?" — click **No**
+3. Start the VM and log in
+4. Open a terminal and start mitmproxy:
    ```bash
    mitmdump --listen-port 8080
    ```
-4. Run through the [Pre-Experiment Checklist](#pre-experiment-checklist)
+5. Run through the [Pre-Experiment Checklist](#pre-experiment-checklist)
+
+### After Every Experiment Session
+1. Run the analysis script on your CSV (see [Running Analysis](#running-analysis))
+2. Commit and push your results (see [Pushing Your Results](#pushing-your-results))
+3. Power off the VM:
+   ```bash
+   sudo systemctl poweroff -i
+   ```
+4. Go back to VirtualBox and restore the `tool-installed` snapshot for the next experiment — click **No** when asked to save current state
 
 ### Starting a Capture
 Open a new terminal tab and run:
@@ -364,7 +374,7 @@ Raw `.mitm` capture files are excluded from git automatically via `.gitignore`. 
 
 **Copy/paste between Mac and VM does not work on Apple Silicon.** This is a known VirtualBox limitation. Open this README in Firefox inside the VM and copy commands from there into the terminal using **Ctrl+Shift+V**.
 
-**Restore the snapshot before every experiment — no exceptions.** If you forget and run two experiments back to back without restoring, your second capture will contain leftover cookies and session data from the first, contaminating your results.
+**Restore the snapshot before every experiment — no exceptions.** If you forget and run two experiments back to back without restoring, your second capture will contain leftover cookies and session data from the first, contaminating your results. Always click **No** when VirtualBox asks if you want to save the current state before restoring.
 
 **On the shared receiving address:** All active_usage emails go to `eptest.gmail@gmail.com` regardless of which provider you are testing. This keeps the destination consistent so the only variable is the sending provider.
 
