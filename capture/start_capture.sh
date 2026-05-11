@@ -12,4 +12,4 @@ echo "Configure your browser proxy to 127.0.0.1:8080 if not already done"
 echo "Press ENTER when ready..."
 read -r
 
-mitmdump -s capture/mitmproxy_script.py --listen-port 8080 --save-stream-file "$OUTPUT_DIR/capture.mitm"
+OUTPUT_DIR=$OUTPUT_DIR mitmdump -s capture/mitmproxy_script.py --listen-port 8080 --save-stream-file "$OUTPUT_DIR/capture.mitm"
