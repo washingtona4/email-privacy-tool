@@ -1,0 +1,10 @@
+mitmproxy>=10.0.0
+pyshark
+pandas
+requests
+pyyaml
+cryptography
+dnspython
+rich
+jinja2
+pytest
