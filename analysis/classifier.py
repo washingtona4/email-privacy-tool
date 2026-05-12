@@ -163,6 +163,18 @@ def main() -> None:
         df.loc[df["category"] == "unknown_third_party", "host"].unique().tolist()
     )
 
+    # Check for email address leakage in request bodies
+    email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+    email_leaks = []
+    for _, row in df.iterrows():
+        matches = re.findall(email_pattern, str(row.get('request_body_snippet', '')))
+        if matches:
+            email_leaks.append({
+                'host': row['host'],
+                'path': row['path'],
+                'emails_found': matches
+            })
+
     summary = {
         "provider": args.provider,
         "phase": phase,
@@ -173,6 +185,8 @@ def main() -> None:
         "advertising_domains": advertising_domains,
         "analytics_domains": analytics_domains,
         "unknown_third_party_domains": unknown_third_party_domains,
+        "email_leaks": email_leaks,
+        "email_leak_count": len(email_leaks),
     }
 
     analysis_path = os.path.join(out_dir, "analysis.json")
@@ -190,6 +204,7 @@ def main() -> None:
     console.print(f"\nTotal requests : {summary['total_requests']}")
     console.print(f"Unique domains : {summary['unique_domains']}")
     console.print(f"Third-party    : {len(third_party_domains)}")
+    console.print(f"Email leaks    : {len(email_leaks)}")
     console.print(f"\nResults written to {out_dir}/")
 
 
