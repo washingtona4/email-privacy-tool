@@ -1,0 +1,35 @@
+{
+  "provider": "gmail",
+  "phase": "idle",
+  "total_requests": 1157,
+  "unique_domains": 38,
+  "third_party_domains": [
+    "2507573.fls.doubleclick.net",
+    "accounts.youtube.com",
+    "ad.doubleclick.net",
+    "csp.withgoogle.com",
+    "googleads.g.doubleclick.net",
+    "lh3.googleusercontent.com",
+    "ssl.google-analytics.com",
+    "stats.g.doubleclick.net",
+    "www.googleadservices.com",
+    "www.googletagmanager.com"
+  ],
+  "by_category": {
+    "first_party": 1125,
+    "known_tracker": 26,
+    "unknown_third_party": 6
+  },
+  "advertising_domains": [],
+  "analytics_domains": [],
+  "unknown_third_party_domains": [
+    "2507573.fls.doubleclick.net",
+    "ad.doubleclick.net",
+    "csp.withgoogle.com",
+    "googleads.g.doubleclick.net",
+    "stats.g.doubleclick.net"
+  ],
+  "email_leaks": [],
+  "email_leak_count": 0,
+  "browser_noise_requests_filtered": 74
+}
