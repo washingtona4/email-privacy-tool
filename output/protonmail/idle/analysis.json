@@ -1,0 +1,31 @@
+{
+  "provider": "protonmail",
+  "phase": "idle",
+  "total_requests": 139,
+  "unique_domains": 11,
+  "third_party_domains": [
+    "aus5.mozilla.org",
+    "content-signature-2.cdn.mozilla.net",
+    "detectportal.firefox.com",
+    "firefox-settings-attachments.cdn.mozilla.net",
+    "firefox.settings.services.mozilla.com",
+    "incoming.telemetry.mozilla.org",
+    "mozilla-ohttp.fastly-edge.com",
+    "push.services.mozilla.com"
+  ],
+  "by_category": {
+    "first_party": 87,
+    "known_tracker": 29,
+    "unknown_third_party": 23
+  },
+  "advertising_domains": [],
+  "analytics_domains": [],
+  "unknown_third_party_domains": [
+    "content-signature-2.cdn.mozilla.net",
+    "detectportal.firefox.com",
+    "firefox-settings-attachments.cdn.mozilla.net",
+    "firefox.settings.services.mozilla.com",
+    "mozilla-ohttp.fastly-edge.com",
+    "push.services.mozilla.com"
+  ]
+}
