@@ -1,0 +1,44 @@
+{
+  "provider": "protonmail",
+  "phase": "account_creation",
+  "total_requests": 321,
+  "unique_domains": 25,
+  "third_party_domains": [
+    "5d5e408adfd7.w.hcaptcha.com",
+    "api.hcaptcha.com",
+    "csp.withgoogle.com",
+    "detectportal.firefox.com",
+    "encrypted-tbn0.gstatic.com",
+    "incoming.telemetry.mozilla.org",
+    "js.chargebee.com",
+    "js.stripe.com",
+    "mozilla-ohttp.fastly-edge.com",
+    "newassets.hcaptcha.com",
+    "ogads-pa.clients6.google.com",
+    "play.google.com",
+    "proton.chargebee.com",
+    "proton.chargebeestaticv2.com",
+    "push.services.mozilla.com",
+    "sentry.io",
+    "www.google.com",
+    "www.googleadservices.com",
+    "www.googletagmanager.com"
+  ],
+  "by_category": {
+    "first_party": 232,
+    "known_tracker": 75,
+    "unknown_third_party": 14
+  },
+  "advertising_domains": [],
+  "analytics_domains": [],
+  "unknown_third_party_domains": [
+    "5d5e408adfd7.w.hcaptcha.com",
+    "api.hcaptcha.com",
+    "csp.withgoogle.com",
+    "detectportal.firefox.com",
+    "mozilla-ohttp.fastly-edge.com",
+    "newassets.hcaptcha.com",
+    "proton.chargebeestaticv2.com",
+    "push.services.mozilla.com"
+  ]
+}

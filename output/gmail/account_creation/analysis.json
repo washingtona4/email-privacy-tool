@@ -1,0 +1,27 @@
+{
+  "provider": "gmail",
+  "phase": "account_creation",
+  "total_requests": 498,
+  "unique_domains": 30,
+  "third_party_domains": [
+    "accounts.youtube.com",
+    "ad.doubleclick.net",
+    "googleads.g.doubleclick.net",
+    "lh3.googleusercontent.com",
+    "www.googleadservices.com"
+  ],
+  "by_category": {
+    "first_party": 485,
+    "known_tracker": 8,
+    "unknown_third_party": 5
+  },
+  "advertising_domains": [],
+  "analytics_domains": [],
+  "unknown_third_party_domains": [
+    "ad.doubleclick.net",
+    "googleads.g.doubleclick.net"
+  ],
+  "email_leaks": [],
+  "email_leak_count": 0,
+  "browser_noise_requests_filtered": 60
+}
