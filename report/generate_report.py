@@ -16,155 +16,56 @@ HTML_TEMPLATE = """<!DOCTYPE html>
   <title>Email Privacy Analysis Report</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      font-size: 12px;
-      color: #111;
-      background: #fff;
-      padding: 2.5rem 3rem;
-    }
-    .report-title {
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      color: #000;
-      margin-bottom: 2px;
-    }
-    .report-meta {
-      font-size: 10px;
-      color: #777;
-      letter-spacing: 0.4px;
-      margin-bottom: 2.5rem;
-      border-bottom: 2px solid #000;
-      padding-bottom: 8px;
-    }
-    .section-title {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #000;
-      margin: 2.5rem 0 0.6rem;
-      padding-bottom: 3px;
-      border-bottom: 1px solid #000;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 11px;
-      margin-bottom: 0.25rem;
-    }
+    body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 12px; color: #111; background: #fff; padding: 2.5rem 3rem; }
+    .report-title { font-size: 15px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: #000; margin-bottom: 2px; }
+    .report-meta { font-size: 10px; color: #777; letter-spacing: 0.4px; margin-bottom: 2.5rem; border-bottom: 2px solid #000; padding-bottom: 8px; }
+    .section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #000; margin: 2.5rem 0 0.6rem; padding-bottom: 3px; border-bottom: 1px solid #000; }
+    table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 0.25rem; }
     thead tr { border-bottom: 1.5px solid #000; }
-    th {
-      text-align: left;
-      padding: 5px 10px;
-      font-weight: 700;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #000;
-      background: #f7f7f7;
-    }
+    th { text-align: left; padding: 5px 10px; font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #000; background: #f7f7f7; }
     th:not(:first-child) { text-align: right; }
-    td {
-      padding: 5px 10px;
-      border-bottom: 1px solid #e8e8e8;
-      color: #111;
-    }
+    td { padding: 5px 10px; border-bottom: 1px solid #e8e8e8; color: #111; }
     td:not(:first-child) { text-align: right; }
     tr:last-child td { border-bottom: 2px solid #000; }
     .phase-label { font-weight: 600; color: #000; }
     .missing { color: #bbb; }
-    .high { color: #b91c1c; font-weight: 700; }
-    .low  { color: #15803d; font-weight: 700; }
     .leak-yes { color: #b91c1c; font-weight: 700; }
     .leak-no  { color: #15803d; }
     .verdict-good { color: #15803d; font-weight: 700; }
     .verdict-bad  { color: #b91c1c; font-weight: 700; }
-    .domain-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 11px;
-      margin-bottom: 1.5rem;
-    }
-    .domain-table th {
-      background: #f7f7f7;
-      border-bottom: 1.5px solid #000;
-      padding: 4px 10px;
-      text-align: left;
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .domain-table td {
-      padding: 4px 10px;
-      border-bottom: 1px solid #ebebeb;
-      vertical-align: top;
-    }
+    .domain-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 1.5rem; }
+    .domain-table th { background: #f7f7f7; border-bottom: 1.5px solid #000; padding: 4px 10px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .domain-table td { padding: 4px 10px; border-bottom: 1px solid #ebebeb; vertical-align: top; }
     .domain-table tr:last-child td { border-bottom: 2px solid #000; }
     .domain-table .provider-col { font-weight: 700; text-transform: capitalize; width: 100px; }
     .domain-table .phase-col { color: #555; width: 120px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.3px; }
-    .cat-dot {
-      display: inline-block;
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      margin-right: 4px;
-      vertical-align: middle;
-    }
-    .cat-advertising    { background: #b91c1c; }
-    .cat-analytics      { background: #c2410c; }
-    .cat-social         { background: #1d4ed8; }
+    .cat-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+    .cat-advertising { background: #b91c1c; }
+    .cat-analytics { background: #c2410c; }
+    .cat-social { background: #1d4ed8; }
     .cat-fingerprinting { background: #6d28d9; }
-    .cat-known_tracker  { background: #7f1d1d; }
-    .cat-cdn            { background: #166534; }
+    .cat-known_tracker { background: #7f1d1d; }
+    .cat-cdn { background: #166534; }
     .cat-unknown_third_party { background: #6b7280; }
-    .domain-entry {
-      display: inline-block;
-      font-size: 10px;
-      margin: 1px 6px 1px 0;
-      color: #111;
-    }
-    .legend-row {
-      display: flex;
-      gap: 20px;
-      margin: 0.75rem 0 2rem;
-      font-size: 10px;
-      color: #333;
-      flex-wrap: wrap;
-    }
+    .domain-entry { display: inline-block; font-size: 10px; margin: 1px 6px 1px 0; color: #111; }
+    .legend-row { display: flex; gap: 20px; margin: 0.75rem 0 2rem; font-size: 10px; color: #333; flex-wrap: wrap; }
     .legend-item { display: flex; align-items: center; gap: 5px; }
     .no-data { color: #aaa; font-style: italic; font-size: 10px; }
-    .footer {
-      margin-top: 3rem;
-      padding-top: 8px;
-      border-top: 1px solid #ccc;
-      font-size: 9px;
-      color: #aaa;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
+    .footer { margin-top: 3rem; padding-top: 8px; border-top: 1px solid #ccc; font-size: 9px; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; }
   </style>
 </head>
 <body>
-
   <div class="report-title">Email Privacy Analysis — Network Traffic Study</div>
   <div class="report-meta">Northwestern University &nbsp;·&nbsp; Andre Washington &nbsp;·&nbsp; Daniel Rivero &nbsp;·&nbsp; Rishi Ramaiya &nbsp;·&nbsp; Ryan Rosu</div>
 
   <div class="section-title">Total requests by provider and phase</div>
   <table>
-    <thead><tr>
-      <th>Phase</th>
-      {% for p in providers %}<th>{{ p | title }}</th>{% endfor %}
-    </tr></thead>
+    <thead><tr><th>Phase</th>{% for p in providers %}<th>{{ p | title }}</th>{% endfor %}</tr></thead>
     <tbody>
     {% for phase in phases %}
     <tr>
       <td class="phase-label">{{ phase.replace('_',' ') | title }}</td>
-      {% for p in providers %}
-      <td>{% if data[p][phase] %}{{ data[p][phase].total_requests }}{% else %}<span class="missing">—</span>{% endif %}</td>
-      {% endfor %}
+      {% for p in providers %}<td>{% if data[p][phase] %}{{ data[p][phase].total_requests }}{% else %}<span class="missing">—</span>{% endif %}</td>{% endfor %}
     </tr>
     {% endfor %}
     </tbody>
@@ -172,17 +73,12 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
   <div class="section-title">Unique domains contacted</div>
   <table>
-    <thead><tr>
-      <th>Phase</th>
-      {% for p in providers %}<th>{{ p | title }}</th>{% endfor %}
-    </tr></thead>
+    <thead><tr><th>Phase</th>{% for p in providers %}<th>{{ p | title }}</th>{% endfor %}</tr></thead>
     <tbody>
     {% for phase in phases %}
     <tr>
       <td class="phase-label">{{ phase.replace('_',' ') | title }}</td>
-      {% for p in providers %}
-      <td>{% if data[p][phase] %}{{ data[p][phase].unique_domains }}{% else %}<span class="missing">—</span>{% endif %}</td>
-      {% endfor %}
+      {% for p in providers %}<td>{% if data[p][phase] %}{{ data[p][phase].unique_domains }}{% else %}<span class="missing">—</span>{% endif %}</td>{% endfor %}
     </tr>
     {% endfor %}
     </tbody>
@@ -190,17 +86,12 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
   <div class="section-title">Third-party domains contacted</div>
   <table>
-    <thead><tr>
-      <th>Phase</th>
-      {% for p in providers %}<th>{{ p | title }}</th>{% endfor %}
-    </tr></thead>
+    <thead><tr><th>Phase</th>{% for p in providers %}<th>{{ p | title }}</th>{% endfor %}</tr></thead>
     <tbody>
     {% for phase in phases %}
     <tr>
       <td class="phase-label">{{ phase.replace('_',' ') | title }}</td>
-      {% for p in providers %}
-      <td>{% if data[p][phase] %}{{ data[p][phase].third_party_domains | length }}{% else %}<span class="missing">—</span>{% endif %}</td>
-      {% endfor %}
+      {% for p in providers %}<td>{% if data[p][phase] %}{{ data[p][phase].third_party_domains | length }}{% else %}<span class="missing">—</span>{% endif %}</td>{% endfor %}
     </tr>
     {% endfor %}
     </tbody>
@@ -208,10 +99,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
   <div class="section-title">Email address leaks detected</div>
   <table>
-    <thead><tr>
-      <th>Phase</th>
-      {% for p in providers %}<th>{{ p | title }}</th>{% endfor %}
-    </tr></thead>
+    <thead><tr><th>Phase</th>{% for p in providers %}<th>{{ p | title }}</th>{% endfor %}</tr></thead>
     <tbody>
     {% for phase in phases %}
     <tr>
@@ -219,8 +107,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
       {% for p in providers %}
       <td>
         {% if data[p][phase] %}
-          {% if data[p][phase].email_leak_count > 0 %}<span class="leak-yes">{{ data[p][phase].email_leak_count }}</span>
-          {% else %}<span class="leak-no">0</span>{% endif %}
+          {% set leak_count = data[p][phase].get('email_leak_count', 0) %}
+          {% if leak_count > 0 %}<span class="leak-yes">{{ leak_count }}</span>{% else %}<span class="leak-no">0</span>{% endif %}
         {% else %}<span class="missing">—</span>{% endif %}
       </td>
       {% endfor %}
@@ -240,11 +128,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
     <span class="legend-item"><span class="cat-dot cat-unknown_third_party"></span>Unknown third party</span>
   </div>
   <table class="domain-table">
-    <thead><tr>
-      <th>Provider</th>
-      <th>Phase</th>
-      <th>Third-party domains</th>
-    </tr></thead>
+    <thead><tr><th>Provider</th><th>Phase</th><th>Third-party domains</th></tr></thead>
     <tbody>
     {% for p in providers %}
       {% for phase in phases %}
@@ -252,12 +136,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         <tr>
           <td class="provider-col">{{ p | title }}</td>
           <td class="phase-col">{{ phase.replace('_',' ') }}</td>
-          <td>
-            {% for domain in data[p][phase].third_party_domains %}
-              {% set cat = data[p][phase].by_category_per_domain.get(domain, 'unknown_third_party') %}
-              <span class="domain-entry"><span class="cat-dot cat-{{ cat }}"></span>{{ domain }}</span>
-            {% endfor %}
-          </td>
+          <td>{% for domain in data[p][phase].third_party_domains %}{% set cat = data[p][phase].by_category_per_domain.get(domain, 'unknown_third_party') %}<span class="domain-entry"><span class="cat-dot cat-{{ cat }}"></span>{{ domain }}</span>{% endfor %}</td>
         </tr>
         {% elif data[p][phase] %}
         <tr>
@@ -273,33 +152,21 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 
   <div class="section-title">Encryption assessment</div>
   <table>
-    <thead><tr>
-      <th>Provider</th>
-      <th>Phase</th>
-      <th>Verdict</th>
-    </tr></thead>
+    <thead><tr><th>Provider</th><th>Phase</th><th>Verdict</th></tr></thead>
     <tbody>
     {% set any_verdict = [] %}
-    {% for p in providers %}
-      {% for phase in phases %}
-        {% if verdicts[p][phase] %}
-          {% set _ = any_verdict.append(1) %}
-          <tr>
-            <td style="font-weight:600;text-transform:capitalize;">{{ p }}</td>
-            <td>{{ phase.replace('_',' ') | title }}</td>
-            <td class="{{ 'verdict-good' if 'end-to-end encrypted' in verdicts[p][phase] else 'verdict-bad' }}">{{ verdicts[p][phase] }}</td>
-          </tr>
-        {% endif %}
-      {% endfor %}
-    {% endfor %}
-    {% if not any_verdict %}
-      <tr><td colspan="3" class="no-data">No encryption data yet — run encryption_checker.py on active_usage captures.</td></tr>
-    {% endif %}
+    {% for p in providers %}{% for phase in phases %}{% if verdicts[p][phase] %}{% set _ = any_verdict.append(1) %}
+      <tr>
+        <td style="font-weight:600;text-transform:capitalize;">{{ p }}</td>
+        <td>{{ phase.replace('_',' ') | title }}</td>
+        <td class="{{ 'verdict-good' if 'end-to-end encrypted' in verdicts[p][phase] else 'verdict-bad' }}">{{ verdicts[p][phase] }}</td>
+      </tr>
+    {% endif %}{% endfor %}{% endfor %}
+    {% if not any_verdict %}<tr><td colspan="3" class="no-data">No encryption data yet — run encryption_checker.py on active_usage captures.</td></tr>{% endif %}
     </tbody>
   </table>
 
   <div class="footer">Generated by email-privacy-tool &nbsp;·&nbsp; Northwestern University CS</div>
-
 </body>
 </html>
 """
@@ -354,6 +221,13 @@ def main() -> None:
         for phase in PHASES:
             analysis = load_analysis(provider, phase)
             if analysis is not None:
+                # Backward compatibility — add missing fields from older captures
+                if "email_leak_count" not in analysis:
+                    analysis["email_leak_count"] = 0
+                if "email_leaks" not in analysis:
+                    analysis["email_leaks"] = []
+                if "browser_noise_requests_filtered" not in analysis:
+                    analysis["browser_noise_requests_filtered"] = 0
                 analysis["by_category_per_domain"] = build_category_per_domain(analysis)
             data[provider][phase] = analysis
             verdicts[provider][phase] = load_encryption(provider, phase)
