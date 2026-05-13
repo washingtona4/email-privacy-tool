@@ -1,0 +1,58 @@
+{
+  "provider": "tutanota",
+  "phase": "account_creation",
+  "total_requests": 360,
+  "unique_domains": 13,
+  "third_party_domains": [
+    "app.tuta.com",
+    "csp.withgoogle.com",
+    "encrypted-tbn0.gstatic.com",
+    "fonts.gstatic.com",
+    "lh3.googleusercontent.com",
+    "ogads-pa.clients6.google.com",
+    "play.google.com",
+    "tuta.com",
+    "w16.api.tuta.com",
+    "www.google.com",
+    "www.googleadservices.com",
+    "www.googletagmanager.com",
+    "www.gstatic.com"
+  ],
+  "by_category": {
+    "unknown_third_party": 301,
+    "known_tracker": 59
+  },
+  "advertising_domains": [],
+  "analytics_domains": [],
+  "unknown_third_party_domains": [
+    "app.tuta.com",
+    "csp.withgoogle.com",
+    "tuta.com",
+    "w16.api.tuta.com"
+  ],
+  "email_leaks": [
+    {
+      "host": "app.tuta.com",
+      "path": "/rest/tutanota/customeraccountservice",
+      "emails_found": [
+        "eptest.tuta@tutamail.com"
+      ]
+    },
+    {
+      "host": "app.tuta.com",
+      "path": "/rest/sys/sessionservice",
+      "emails_found": [
+        "eptest.tuta@tutamail.com"
+      ]
+    },
+    {
+      "host": "app.tuta.com",
+      "path": "/rest/sys/sessionservice",
+      "emails_found": [
+        "eptest.tuta@tutamail.com"
+      ]
+    }
+  ],
+  "email_leak_count": 3,
+  "browser_noise_requests_filtered": 37
+}
