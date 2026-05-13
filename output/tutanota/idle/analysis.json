@@ -1,0 +1,28 @@
+{
+  "provider": "tutanota",
+  "phase": "idle",
+  "total_requests": 40,
+  "unique_domains": 1,
+  "third_party_domains": [
+    "app.tuta.com"
+  ],
+  "by_category": {
+    "unknown_third_party": 40
+  },
+  "advertising_domains": [],
+  "analytics_domains": [],
+  "unknown_third_party_domains": [
+    "app.tuta.com"
+  ],
+  "email_leaks": [
+    {
+      "host": "app.tuta.com",
+      "path": "/rest/sys/sessionservice",
+      "emails_found": [
+        "eptest.tuta@tutamail.com"
+      ]
+    }
+  ],
+  "email_leak_count": 1,
+  "browser_noise_requests_filtered": 7
+}
