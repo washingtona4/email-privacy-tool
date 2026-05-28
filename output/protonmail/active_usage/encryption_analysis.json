@@ -1,0 +1,735 @@
+{
+  "per_request": [
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v5/events/rvs2jhg0ttS5A7pRyqcv0B_HesZ808JrY9AAYwjXg7nmZUU5V7ounZdJu_AnQ4W01xHeAfbbL_anAqNWAa9u9w==?ConversationCounts=1&MessageCounts=1&OnlyInInboxForCategoriesCounts=1&CalledFrom=Foreground",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/u/0/inbox",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/feature/v2/frontend?sessionId=408981738&appName=-&environment=default",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/incomingdefaults?Location=14&Page=0&PageSize=100",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/labels?Type=4",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/calendar/v1/timezones",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/labels?Type=1",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/labels?Type=3",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/labels?Type=2",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/settings",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "account.proton.me",
+      "path": "/storage.html",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/contacts/v4/contacts/emails?Page=0&PageSize=1000",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/addresses?Page=0&PageSize=50",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/settings",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/users",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/features?Code=EarlyAccess%2CMailActionsChunkSize%2CAccountSecurityDismissed2FACard&Limit=3",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/events/latest",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/auth/v4/sessions/local",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/assets/static/favicon.d47d3d0bef6d338e377a.svg?v=y4e7ylqanyb",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/checklist/check-item",
+      "entropy": 4.1403,
+      "classification": "compressed_or_mixed"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/account/v4/breaches/unread/count",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/checklist/1",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/importer/v1/sync",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail-api.proton.me",
+      "path": "/mail/v4/ai-assistant",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/users/invitations",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/payments/v6/subscription/latest",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/filters",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/settings/calendar",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/calendar/v1?OrderBy=0&ReturnFlags=1",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/newsletter-subscriptions?PageSize=100&Active=0&Spam=0&Sort[LastReceivedTime]=DESC&Sort[ID]=DESC",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/newsletter-subscriptions?PageSize=100&Active=1&Spam=0&Sort[LastReceivedTime]=DESC&Sort[ID]=DESC",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/conversations?Page=0&PageSize=50&Limit=50&LabelID%5B%5D=0&Sort=SnoozeTime&Desc=1",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/conversations/count?OnlyInInboxForCategories=1",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/messages/count?OnlyInInboxForCategories=1",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/assets/static/checklist-protect-inbox-small.cef8b694ca327e140bda.svg",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/assets/static/checklist-gmail-forward-small.79aa6eab8bc0d3ed5fae.svg",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/assets/static/checklist-app-store-small.d6449a8568bb7832ad05.svg",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v5/events/rvs2jhg0ttS5A7pRyqcv0B_HesZ808JrY9AAYwjXg7nmZUU5V7ounZdJu_AnQ4W01xHeAfbbL_anAqNWAa9u9w==?ConversationCounts=1&MessageCounts=1&OnlyInInboxForCategoriesCounts=1&CalledFrom=Foreground",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/features?Code=ProtonBadge&Limit=1",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/features?Code=Offers%2COfferPassFamilyPlan2024Yearly%2COfferMailTrial2023%2COfferGoUnlimited2022%2CMailPostSignupOneDollarState%2CDrivePostSignupOneDollarState%2CSubscriptionLastReminderDate%2CMailPaidUserNudgeTimestamp%2CDrivePaidUserNudgeTimestamp%2CBundlePaidUserNudgeTimestamp%2COfferGoUnlimited2025%2CHideUnlimitedToDuoPermanentOffer&Limit=12",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/payments/v4/plans/default",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/payments/v5/status",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/payments/v4/plans",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/features?Code=CategoryViewB2BOnboardingViewFlags%2CComposerAssistantTrialStartDate%2CDismissedRecoverDataCard%2CElectronESInboxThreshold%2CSpotlightIntroduceBookings%2CBookingSpotlightInMail%2CCategoryViewBeta%2CNewsletterSubscriptionSpotlight%2CFeatureTourExpirationDate%2CAutoDowngradeReminder%2CInboxDesktopFreeTrialDates%2CInboxDesktopFreeTrialReminders%2CSeenLightLabellingFeatureModal%2CNPSFeedbackWebMail%2CNumberOfPreloadedConversations%2CElectronConvPreloadAmount%2CBYOESpotlightModal%2CShowB2BOnboardingButton%2CB2BOnboardingSpotlight%2CReferralProgram%2CReferralProgramSpotlight%2CBlockSenderInToolbar%2CAutoDelete%2CCategoryViewB2COnboardingViewFlags%2CCategoryViewOnboardingAccountDateThreshold%2CCategoryViewVisionaryOnboarding%2CNumAttachmentsWithoutEmbedded%2CSpotlightBreachAlertSecurityCenter%2CSpotlightVPNDrawer%2CReferralSpotlightSettings%2CReferralTopBarButton%2CReferralDrawerApp&Limit=32",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/conversations/SCqtl568xUMHwss2Djs3ZyeTcmVG8kBzp1sRekkQn1livZRDaJ6J7thBr2uhglwsKjr0Ss3tT0ivCGJPRs7lXA==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/conversations/AH9XHiYqrReSLT-dRPhxwUTO-o6brvuGa-HUI-11ELiFA5xMrnHFs8Rh7gM0DoQqqkoD5YUQdmFr0-hGhWFT5w==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/conversations/InVZA3KpVKnChGJaywV5x2TZ8viEOAy4W-faBnt0RhmLxyNEjGZRITN9EJR60JGf8qeJa96g2Tb0EuIikT7qgQ==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/conversations/6aqWmNijwsCvaTBoa-R3H0Jx8ErD0Lr72UctqULWJkk3V1k9UVUER6cA1eRUAhun_plnxbxDy8-6So2gv1hW_g==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/conversations/Wb20UBDbQl8Qz8ldNS_U3JcPf80bGZJiFKtgkZS0mkzoUSOdKw5G0ZVO-LZ6jZ6eGw_8Rve3UhllcjqZD5q5aQ==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/features?Code=PostSubscriptionShortDomainSpotlight%2CScheduledSendFreemium%2CComposerAssistantSpotlight%2CSpotlightScheduledSend&Limit=4",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/assets/static/spotlight-scheduled-send.d582871634929642c5ae.svg",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/features/SpotlightScheduledSend/value",
+      "entropy": 3.3736,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/data/v1/metrics",
+      "entropy": 4.7268,
+      "classification": "compressed_or_mixed"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/feature/v2/frontend/client/metrics",
+      "entropy": 4.8546,
+      "classification": "compressed_or_mixed"
+    },
+    {
+      "host": "push.services.mozilla.com",
+      "path": "/",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/messages",
+      "entropy": 5.7202,
+      "classification": "pgp_encrypted"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v5/events/rvs2jhg0ttS5A7pRyqcv0B_HesZ808JrY9AAYwjXg7nmZUU5V7ounZdJu_AnQ4W01xHeAfbbL_anAqNWAa9u9w==?ConversationCounts=1&MessageCounts=1&OnlyInInboxForCategoriesCounts=1&CalledFrom=Foreground",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/conversations/TKr0igmp3D2fFkk1y8wvOhA-hTDsaFDFbWX6jtW0TkL_cLHaKUDfrpf8-kgtDY2OD2v58ZzlwdIRn1uWVBks9Q==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/messages/yQ83dz7PlR7K83jNFk6Yd2I2Nua1Wwf478Dq89WaQ-poYJBkgjk94saQFB46jtPPJy8QC-UqkZE2WlUKTeu67g==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/messages/yQ83dz7PlR7K83jNFk6Yd2I2Nua1Wwf478Dq89WaQ-poYJBkgjk94saQFB46jtPPJy8QC-UqkZE2WlUKTeu67g==",
+      "entropy": 5.6727,
+      "classification": "compressed_or_mixed"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v5/events/OqRS4qtwk2BYpqvnGU-moKRaEJieQp7eweaFXnyOJdVishQFq8t9a79p9wyf4DIrpuuQuefUE_vRn7Fw4WpNbg==?ConversationCounts=1&MessageCounts=1&OnlyInInboxForCategoriesCounts=1&CalledFrom=Foreground",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/messages/yQ83dz7PlR7K83jNFk6Yd2I2Nua1Wwf478Dq89WaQ-poYJBkgjk94saQFB46jtPPJy8QC-UqkZE2WlUKTeu67g==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/keys/all?Email=eptest.gmail%40gmail.com&InternalOnly=0",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/kt/epochs",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/kt/epochs",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/kt/v1/epochs/6162/proof?Identifier=eptestgmail%40gmail.com&Revision=1",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/kt/v1/epochs/6162/proof?Identifier=%40gmail.com&Revision=1",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/contacts/v4/contacts/emails?Email=eptest.gmail%40gmail.com",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/messages/yQ83dz7PlR7K83jNFk6Yd2I2Nua1Wwf478Dq89WaQ-poYJBkgjk94saQFB46jtPPJy8QC-UqkZE2WlUKTeu67g==?Source=composer",
+      "entropy": 5.1256,
+      "classification": "compressed_or_mixed"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v5/events/JYP1Jx-51IOzHSsnsCCKw0XNkeREsk1dXRNjaAyDaVFQCorKx2f1NNBpYxu49GhKESW_7IJ5TbGLWjc7QRK87g==?ConversationCounts=1&MessageCounts=1&OnlyInInboxForCategoriesCounts=1&CalledFrom=Foreground",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/messages/yQ83dz7PlR7K83jNFk6Yd2I2Nua1Wwf478Dq89WaQ-poYJBkgjk94saQFB46jtPPJy8QC-UqkZE2WlUKTeu67g==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/features?Code=PassNudgeDontShowAgain%2CSetExpiration&Limit=2",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/uuusdGnoVukLuIKCBzD9Hm20Ja2ITKAfk8QyOnc2RomIgXJ3X4RyoOMJG2v8-5C2GP1a4W40AtBAswjv9fNDDw==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/TJhgrFjZ_aq3AXPRsy1pfjaRd-GHC8a9cGlblgd-AW5mGlZOtnn0Tegg1Mjnk9XpeYTVAH3c3iCWlWDNO88QCw==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/Ix3ADu2bVzfb8aZRjHBsYsjpwzbJWAL46LNz8fo9irQ-FevtBLymsPVUQT6lXj8cYKP-F0VdYu5HewT1ZjeiEQ==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/Uhi-gdT20ZXbN8FENWhDlJxhyx8qXoZIQIuswtpIbwuxaSMViaxDZwvvnaLs3OJfnn6XzsxVJdxITjhbynkR-A==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/don2OF46lvsmGiC3hUv4fXLWkuBACO2o0KsaFQ7fGfAHobJdpmNBA5F1vFRa0WAKsB-Sxu0TvtQaRsFcmzH9cA==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/messages/read",
+      "entropy": 5.5159,
+      "classification": "compressed_or_mixed"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/gcgXmNUe0tvcH3py3-HwYQwIbNXO499NxgYxpQ9Dx6HhUYtf331ezAwvHaI1wbozRffNbBAASsOrwbylRliewg==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/TLeMBjLT9_zFk4uRNPOaU4K6eQE5BbuCWddq81PhAWKWaUlcOWhx9ITk3nao1US2RBOpzKnQM-Tu2mrY3ZTsrw==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/TnQSz2-edL0BtmEXxJdeLTMY7M2aIRIwGkGBfUcMgXZj4MTG31xyylTLfHMk3xn-AdYsUFrJnbQZ3U7_dV3dxg==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/1URnWwdKqmjjA3MzMGspZBx9khlUmNBqZMUKx6CL0cZOniGn72qFQsiV4KGfoeUtghKGariQBbNkTxaD8EmCqQ==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/i17hgDBoXC2huVlnC0_x7P7ZL9l3aYlit0nlMWwPRJL8yaPSkIoteregx3EaNQ6MPq7lEPVDUU6xi-ANlfCzAw==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/nNZaxogQttKXKczE0U7JN0SN3lIigiSn6aJUG7X0TsPoM7OThvq78bA_HlyiAhEeB-hUBqXJFLDzrqLWz2mUXg==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/features?Code=PrivacyDropdownOpened%2CSpotlightLoadContent&Limit=2",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/keys/all?Email=no-reply%40notify.proton.me&InternalOnly=1",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/kt/epochs",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/kt/v1/epochs/6162/proof?Identifier=noreply%40notify.proton.me&Revision=2",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/kt/v1/epochs/6162/proof?Identifier=noreply%40notify.proton.me&Revision=1",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/contacts/v4/contacts/emails?Email=no-reply%40notify.proton.me",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/keys/all?Email=no-reply%40notify.proton.me&InternalOnly=0",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/kt/epochs",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/kt/v1/epochs/6162/proof?Identifier=noreply%40notify.proton.me&Revision=2",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/kt/v1/epochs/6162/proof?Identifier=noreply%40notify.proton.me&Revision=1",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/data/v1/stats/multiple",
+      "entropy": 4.9628,
+      "classification": "compressed_or_mixed"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/contacts/v4/contacts/emails?Email=no-reply%40notify.proton.me",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/messages",
+      "entropy": 5.4815,
+      "classification": "compressed_or_mixed"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v5/events/sAJYLu7v2H2yErGzgi8P01m95_RKzxJsnS9h0xcICBhdVfENmRcpby4BJLiReTvvxawdLmwuYiQ4q7eyVirPZw==?ConversationCounts=1&MessageCounts=1&OnlyInInboxForCategoriesCounts=1&CalledFrom=Foreground",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/messages/yQ83dz7PlR7K83jNFk6Yd2I2Nua1Wwf478Dq89WaQ-poYJBkgjk94saQFB46jtPPJy8QC-UqkZE2WlUKTeu67g==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/messages/oE4cqIXsEUn6vcmv30aJz9S1TJHDlKgUYWTVnDU5hx4LIkumZAcnLCEyErllgbBYg9RsZbTqs6CBW16lXoK4hA==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/messages/pySBgYV0wSeWzwRbrDBazDHFrwLZO7izKl5RZrayklmTOL2zNLQlL5bMIrXmfY9syapdt5fo05kP2lgTQImfdg==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v4/keys/all?Email=no-reply%40notify.proton.me&InternalOnly=0",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/kt/epochs",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/kt/v1/epochs/6162/proof?Identifier=noreply%40notify.proton.me&Revision=2",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/kt/v1/epochs/6162/proof?Identifier=noreply%40notify.proton.me&Revision=1",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/contacts/v4/contacts/emails?Email=no-reply%40notify.proton.me",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/messages/pySBgYV0wSeWzwRbrDBazDHFrwLZO7izKl5RZrayklmTOL2zNLQlL5bMIrXmfY9syapdt5fo05kP2lgTQImfdg==?Source=composer",
+      "entropy": 5.1493,
+      "classification": "compressed_or_mixed"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/core/v5/events/_qEnq0MC_50Ye1gEPX1hsG28PVQPDMJ2K3I9zXH-DnLLhEK9yOewBLnuwvnKWB1NZGQvtP27zenErw9kcxHGlw==?ConversationCounts=1&MessageCounts=1&OnlyInInboxForCategoriesCounts=1&CalledFrom=Foreground",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/N2d2t5J_8fIzKOF6ez1u0fX8X0guONEolqO5Ow5ZxWhG5WN5U8DULgNJnDF2HYghAZHF5WV61M6p23103R5rCg==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/WCvx-yrKQuMhO7vIjCqngv9ymHKXF9_IcCx0X0rFLGWlEgZHuNqHcZPuklsr_TmSBWU9q8NeJwp0xXgbsGvPhg==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/5Iw9UdTSCGHgXH3KyRJuapo0ua2Kq3H948QHwgCTUYqs5PKbRqhEfLNSYzEuL9E0kRn95-VqEExSv1SmtI6Gsg==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/4ZvG-b0zgUou2P_Q1Rw4DgKABCP6kZCNGPu26BDrDDhE7mO5JDA3d_-eqXFk_nD1cW82y27tlOGTmBIy0urRlQ==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/5DWdIKumYxOUCzSthMq-0rBacIpnJfETwsH5HA7vbxpHSRWdExxdjdFwccB8jr3MZBvHYslFh0dsvhMeiBQXOQ==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/t3fY_VDU2V456tOq3P7XgMxrK82C2seqg_GRYzakrf8_PQV9AxKQx16nEtWOs4xzPfunNn-TF1QjtM0YAOHetw==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/vs537dE7KPk1jW-928Dtaks0gzZ3WV1iGVUKBjtisz1NALN_wq9xHIlDddAl6nFsJyBE_-TPdsVTXQsAyzKr8g==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/anIt89TBv_VXxCOGAPf7xNToGEgV6UTiDkNW-lj3ip6cfig0687M681FIjJB8a9tFDXTfS6vhQ_1wgvoCBjWpA==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/qLun1Hp9tshD3eGiLCidk5EMGiRdzo05pG93_bf5HRhchudJvpwL8Eq5juLQYHuN55Rz3xagmClr-cM4Qh3d3A==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/CVno0aNPcJJQK27hnA0Adc_o-3YMuq2m4PABeB6eF2tPdEhr5pUuUxU6hmMNyuLiEFZ9ufBb8kFESBdbMLpg1w==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/attachments/MNUYJEOTJ3coclmXG_FM6uBi4IJlFuc8_GoRDnbF_7Hw48ouZUIt8VUaaQsbuTB_0jel1sqV7GobKOWSuASbhA==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    },
+    {
+      "host": "mail.proton.me",
+      "path": "/api/mail/v4/messages/pySBgYV0wSeWzwRbrDBazDHFrwLZO7izKl5RZrayklmTOL2zNLQlL5bMIrXmfY9syapdt5fo05kP2lgTQImfdg==",
+      "entropy": 0.0,
+      "classification": "likely_plaintext"
+    }
+  ],
+  "overall_assessment": {
+    "total_requests": 120,
+    "pgp_encrypted_count": 1,
+    "likely_plaintext_count": 110,
+    "likely_encrypted_count": 0,
+    "compressed_or_mixed_count": 9
+  },
+  "pgp_encrypted_count": 1,
+  "likely_plaintext_count": 110,
+  "likely_encrypted_count": 0,
+  "verdict": "Message content appears end-to-end encrypted via PGP."
+}

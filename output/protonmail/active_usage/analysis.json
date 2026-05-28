@@ -1,0 +1,18 @@
+{
+  "provider": "protonmail",
+  "phase": "active_usage",
+  "total_requests": 120,
+  "unique_domains": 4,
+  "third_party_domains": [
+    "push.services.mozilla.com"
+  ],
+  "by_category": {
+    "first_party": 119,
+    "unknown_third_party": 1
+  },
+  "advertising_domains": [],
+  "analytics_domains": [],
+  "unknown_third_party_domains": [
+    "push.services.mozilla.com"
+  ]
+}
