@@ -14,6 +14,32 @@ from rich.table import Table
 CDN_DOMAINS = {"fastly.net", "cloudflare.com", "akamaized.net", "cloudfront.net"}
 DISCONNECT_CATEGORIES = {"Advertising", "Analytics", "Social", "Fingerprinting"}
 
+# Firefox background requests that are browser noise, not provider behavior
+BROWSER_NOISE_DOMAINS = {
+    "mozilla.org",
+    "mozilla.com",
+    "mozilla.net",
+    "firefox.com",
+    "mozgcp.net",
+    "detectportal.firefox.com",
+    "firefox.settings.services.mozilla.com",
+    "firefox-settings-attachments.cdn.mozilla.net",
+    "incoming.telemetry.mozilla.org",
+    "push.services.mozilla.com",
+    "location.services.mozilla.com",
+    "content-signature-2.cdn.mozilla.net",
+    "ads.mozilla.org",
+    "ads-img.mozilla.org",
+    "mozilla-ohttp.fastly-edge.com",
+    "prod.ohttp-gateway.prod.webservices.mozgcp.net",
+    "normandy.cdn.mozilla.net",
+    "shavar.services.mozilla.com",
+    "safebrowsing.googleapis.com",
+    "ocsp.digicert.com",
+    "ocsp.pki.goog",
+    "crl.pki.goog",
+}
+
 
 def load_providers(config_path: str) -> dict:
     with open(config_path, encoding="utf-8") as f:
@@ -47,11 +73,19 @@ def load_easyprivacy(path: str) -> set[str]:
         for line in f:
             line = line.strip()
             if line.startswith("||"):
-                # Strip leading || and trailing ^
                 domain = line[2:].split("^")[0].split("/")[0].lower()
                 if domain:
                     domains.add(domain)
     return domains
+
+
+def is_browser_noise(host: str) -> bool:
+    """Return True if this host is a known Firefox background domain."""
+    h = host.lower().lstrip("www.")
+    for noise_domain in BROWSER_NOISE_DOMAINS:
+        if h == noise_domain or h.endswith("." + noise_domain):
+            return True
+    return False
 
 
 def host_matches(host: str, domains: list[str]) -> bool:
@@ -91,7 +125,7 @@ def classify_host(
             break
 
     if cat:
-        return cat  # advertising / analytics / social / fingerprinting
+        return cat
 
     if host_matches_set(host, easyprivacy):
         return "known_tracker"
@@ -135,44 +169,63 @@ def main() -> None:
 
     df = pd.read_csv(args.input, dtype=str).fillna("")
 
-    # Keep only the last occurrence of each (timestamp, host, path) to
-    # prefer response-updated rows over request-only rows.
+    # Keep only the last occurrence of each (timestamp, host, path)
     df = df.drop_duplicates(subset=["timestamp", "host", "path"], keep="last")
 
-    df["category"] = df["host"].apply(
+    # Filter out known Firefox browser background noise
+    browser_noise_mask = df["host"].apply(is_browser_noise)
+    df_filtered = df[~browser_noise_mask].copy()
+    browser_noise_count = browser_noise_mask.sum()
+
+    df_filtered["category"] = df_filtered["host"].apply(
         lambda h: classify_host(h, first_party, disconnect_map, easyprivacy)
     )
 
     out_dir = os.path.dirname(os.path.abspath(args.input))
     classified_path = os.path.join(out_dir, "classified_capture.csv")
-    df.to_csv(classified_path, index=False)
+    df_filtered.to_csv(classified_path, index=False)
 
     # Build summary
-    third_party_mask = df["category"] != "first_party"
-    third_party_domains = sorted(df.loc[third_party_mask, "host"].unique().tolist())
+    third_party_mask = df_filtered["category"] != "first_party"
+    third_party_domains = sorted(df_filtered.loc[third_party_mask, "host"].unique().tolist())
 
-    by_category: dict[str, int] = df["category"].value_counts().to_dict()
+    by_category: dict[str, int] = df_filtered["category"].value_counts().to_dict()
 
     advertising_domains = sorted(
-        df.loc[df["category"] == "advertising", "host"].unique().tolist()
+        df_filtered.loc[df_filtered["category"] == "advertising", "host"].unique().tolist()
     )
     analytics_domains = sorted(
-        df.loc[df["category"] == "analytics", "host"].unique().tolist()
+        df_filtered.loc[df_filtered["category"] == "analytics", "host"].unique().tolist()
     )
     unknown_third_party_domains = sorted(
-        df.loc[df["category"] == "unknown_third_party", "host"].unique().tolist()
+        df_filtered.loc[df_filtered["category"] == "unknown_third_party", "host"].unique().tolist()
     )
+
+    # Check for email address leakage in request bodies
+    email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+    email_leaks = []
+    for _, row in df_filtered.iterrows():
+        matches = re.findall(email_pattern, str(row.get('request_body_snippet', '')))
+        if matches:
+            email_leaks.append({
+                'host': row['host'],
+                'path': row['path'],
+                'emails_found': matches
+            })
 
     summary = {
         "provider": args.provider,
         "phase": phase,
-        "total_requests": len(df),
-        "unique_domains": int(df["host"].nunique()),
+        "total_requests": len(df_filtered),
+        "unique_domains": int(df_filtered["host"].nunique()),
         "third_party_domains": third_party_domains,
         "by_category": by_category,
         "advertising_domains": advertising_domains,
         "analytics_domains": analytics_domains,
         "unknown_third_party_domains": unknown_third_party_domains,
+        "email_leaks": email_leaks,
+        "email_leak_count": len(email_leaks),
+        "browser_noise_requests_filtered": int(browser_noise_count),
     }
 
     analysis_path = os.path.join(out_dir, "analysis.json")
@@ -190,6 +243,8 @@ def main() -> None:
     console.print(f"\nTotal requests : {summary['total_requests']}")
     console.print(f"Unique domains : {summary['unique_domains']}")
     console.print(f"Third-party    : {len(third_party_domains)}")
+    console.print(f"Email leaks    : {len(email_leaks)}")
+    console.print(f"Browser noise filtered : {browser_noise_count}")
     console.print(f"\nResults written to {out_dir}/")
 
 

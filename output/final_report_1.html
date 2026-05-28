@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Email Privacy Analysis Report</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2rem; color: #222; background: #fafafa; }
+    h1 { color: #1a1a2e; border-bottom: 3px solid #e94560; padding-bottom: .4rem; }
+    h2 { color: #16213e; margin-top: 2rem; }
+    h3 { color: #0f3460; }
+    .team { font-size: .95rem; color: #555; margin-bottom: 1.5rem; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; background: #fff; }
+    th { background: #1a1a2e; color: #fff; padding: .5rem .8rem; text-align: left; }
+    td { border: 1px solid #ddd; padding: .45rem .8rem; }
+    tr:nth-child(even) td { background: #f2f2f2; }
+    .verdict-good { color: #2ecc71; font-weight: bold; }
+    .verdict-bad  { color: #e74c3c; font-weight: bold; }
+    .domain-list { font-size: .85rem; color: #444; }
+    .tag { display: inline-block; border-radius: 3px; padding: 1px 6px; font-size: .8rem;
+           margin: 1px; color: #fff; }
+    .tag-advertising   { background: #e74c3c; }
+    .tag-analytics     { background: #e67e22; }
+    .tag-social        { background: #3498db; }
+    .tag-fingerprinting{ background: #9b59b6; }
+    .tag-known_tracker { background: #c0392b; }
+    .tag-cdn           { background: #27ae60; }
+    .tag-unknown_third_party { background: #7f8c8d; }
+    .missing { color: #aaa; font-style: italic; }
+  </style>
+</head>
+<body>
+
+<h1>Email Privacy Analysis — Network Traffic Study</h1>
+<div class="team">
+  Northwestern University CS Research Project &nbsp;|&nbsp;
+  Team: Andre (Gmail) &bull; Daniel (Outlook) &bull; Rishi (ProtonMail) &bull; Ryan (Tutanota)
+</div>
+
+<h2>Summary: Total Requests by Provider &amp; Phase</h2>
+<table>
+  <tr>
+    <th>Phase</th>
+    <th>Gmail</th><th>Outlook</th><th>Protonmail</th><th>Tutanota</th>
+  </tr>
+  
+  <tr>
+    <td><strong>Account Creation</strong></td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+<<<<<<< HEAD
+        <span class="missing">—</span>
+=======
+        321
+>>>>>>> 66c36bea3850f416529428098631e5b136bd4f9f
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    <td><strong>Idle</strong></td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+<<<<<<< HEAD
+        139
+=======
+        <span class="missing">—</span>
+>>>>>>> 66c36bea3850f416529428098631e5b136bd4f9f
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    <td><strong>Active Usage</strong></td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    <td><strong>Tracker Test</strong></td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+  </tr>
+  
+</table>
+
+<h2>Summary: Unique Domains by Provider &amp; Phase</h2>
+<table>
+  <tr>
+    <th>Phase</th>
+    <th>Gmail</th><th>Outlook</th><th>Protonmail</th><th>Tutanota</th>
+  </tr>
+  
+  <tr>
+    <td><strong>Account Creation</strong></td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+<<<<<<< HEAD
+        <span class="missing">—</span>
+=======
+        25
+>>>>>>> 66c36bea3850f416529428098631e5b136bd4f9f
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    <td><strong>Idle</strong></td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+<<<<<<< HEAD
+        11
+=======
+        <span class="missing">—</span>
+>>>>>>> 66c36bea3850f416529428098631e5b136bd4f9f
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    <td><strong>Active Usage</strong></td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    <td><strong>Tracker Test</strong></td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+  </tr>
+  
+</table>
+
+<h2>Summary: Third-Party Domain Count by Provider &amp; Phase</h2>
+<table>
+  <tr>
+    <th>Phase</th>
+    <th>Gmail</th><th>Outlook</th><th>Protonmail</th><th>Tutanota</th>
+  </tr>
+  
+  <tr>
+    <td><strong>Account Creation</strong></td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+<<<<<<< HEAD
+        <span class="missing">—</span>
+=======
+        19
+>>>>>>> 66c36bea3850f416529428098631e5b136bd4f9f
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    <td><strong>Idle</strong></td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+<<<<<<< HEAD
+        8
+=======
+        <span class="missing">—</span>
+>>>>>>> 66c36bea3850f416529428098631e5b136bd4f9f
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    <td><strong>Active Usage</strong></td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+  </tr>
+  
+  <tr>
+    <td><strong>Tracker Test</strong></td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+    <td>
+      
+        <span class="missing">—</span>
+      
+    </td>
+    
+  </tr>
+  
+</table>
+
+
+<h2>Gmail: Third-Party Domains by Category</h2>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  <p class="missing">No data collected yet.</p>
+
+
+<h2>Outlook: Third-Party Domains by Category</h2>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  <p class="missing">No data collected yet.</p>
+
+
+<h2>Protonmail: Third-Party Domains by Category</h2>
+
+
+  
+<<<<<<< HEAD
+
+  
+=======
+>>>>>>> 66c36bea3850f416529428098631e5b136bd4f9f
+    
+  
+
+  
+
+  
+
+<<<<<<< HEAD
+
+  
+    
+  
+    
+    <h3>Idle</h3>
+    <div class="domain-list">
+      
+        
+        <span class="tag tag-unknown_third_party">aus5.mozilla.org</span>
+      
+        
+        <span class="tag tag-unknown_third_party">content-signature-2.cdn.mozilla.net</span>
+=======
+  
+
+
+  
+    
+    <h3>Account Creation</h3>
+    <div class="domain-list">
+      
+        
+        <span class="tag tag-unknown_third_party">5d5e408adfd7.w.hcaptcha.com</span>
+      
+        
+        <span class="tag tag-unknown_third_party">api.hcaptcha.com</span>
+      
+        
+        <span class="tag tag-unknown_third_party">csp.withgoogle.com</span>
+>>>>>>> 66c36bea3850f416529428098631e5b136bd4f9f
+      
+        
+        <span class="tag tag-unknown_third_party">detectportal.firefox.com</span>
+      
+        
+<<<<<<< HEAD
+        <span class="tag tag-unknown_third_party">firefox-settings-attachments.cdn.mozilla.net</span>
+      
+        
+        <span class="tag tag-unknown_third_party">firefox.settings.services.mozilla.com</span>
+=======
+        <span class="tag tag-unknown_third_party">encrypted-tbn0.gstatic.com</span>
+>>>>>>> 66c36bea3850f416529428098631e5b136bd4f9f
+      
+        
+        <span class="tag tag-unknown_third_party">incoming.telemetry.mozilla.org</span>
+      
+        
+<<<<<<< HEAD
+        <span class="tag tag-unknown_third_party">mozilla-ohttp.fastly-edge.com</span>
+      
+        
+        <span class="tag tag-unknown_third_party">push.services.mozilla.com</span>
+      
+=======
+        <span class="tag tag-unknown_third_party">js.chargebee.com</span>
+      
+        
+        <span class="tag tag-unknown_third_party">js.stripe.com</span>
+      
+        
+        <span class="tag tag-unknown_third_party">mozilla-ohttp.fastly-edge.com</span>
+      
+        
+        <span class="tag tag-unknown_third_party">newassets.hcaptcha.com</span>
+      
+        
+        <span class="tag tag-unknown_third_party">ogads-pa.clients6.google.com</span>
+      
+        
+        <span class="tag tag-unknown_third_party">play.google.com</span>
+      
+        
+        <span class="tag tag-unknown_third_party">proton.chargebee.com</span>
+      
+        
+        <span class="tag tag-unknown_third_party">proton.chargebeestaticv2.com</span>
+      
+        
+        <span class="tag tag-unknown_third_party">push.services.mozilla.com</span>
+      
+        
+        <span class="tag tag-unknown_third_party">sentry.io</span>
+      
+        
+        <span class="tag tag-unknown_third_party">www.google.com</span>
+      
+        
+        <span class="tag tag-unknown_third_party">www.googleadservices.com</span>
+      
+        
+        <span class="tag tag-unknown_third_party">www.googletagmanager.com</span>
+      
+>>>>>>> 66c36bea3850f416529428098631e5b136bd4f9f
+    </div>
+    
+  
+    
+  
+    
+  
+<<<<<<< HEAD
+=======
+    
+  
+>>>>>>> 66c36bea3850f416529428098631e5b136bd4f9f
+
+
+<h2>Tutanota: Third-Party Domains by Category</h2>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  <p class="missing">No data collected yet.</p>
+
+
+
+<h2>Encryption Verdicts</h2>
+<table>
+  <tr>
+    <th>Provider</th>
+    <th>Phase</th>
+    <th>Verdict</th>
+  </tr>
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+</table>
+
+</body>
+</html>
