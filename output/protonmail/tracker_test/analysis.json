@@ -1,0 +1,20 @@
+{
+  "provider": "protonmail",
+  "phase": "tracker_test",
+  "total_requests": 52,
+  "unique_domains": 3,
+  "third_party_domains": [
+    "mozilla-ohttp.fastly-edge.com",
+    "push.services.mozilla.com"
+  ],
+  "by_category": {
+    "first_party": 50,
+    "unknown_third_party": 2
+  },
+  "advertising_domains": [],
+  "analytics_domains": [],
+  "unknown_third_party_domains": [
+    "mozilla-ohttp.fastly-edge.com",
+    "push.services.mozilla.com"
+  ]
+}
