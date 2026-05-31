@@ -1,0 +1,29 @@
+{
+  "provider": "outlook",
+  "phase": "active_usage",
+  "total_requests": 131,
+  "unique_domains": 12,
+  "third_party_domains": [
+    "api.github.com",
+    "api.taboola.com",
+    "data.mail.yahoo.com",
+    "difw.yahoo.com",
+    "ecp.yusercontent.com",
+    "geo.yahoo.com",
+    "mail.yahoo.com",
+    "s.yimg.com",
+    "sb.scorecardresearch.com",
+    "udc.yahoo.com",
+    "us-api.taboola.com",
+    "www.google-analytics.com"
+  ],
+  "by_category": {
+    "known_tracker": 123,
+    "unknown_third_party": 8
+  },
+  "advertising_domains": [],
+  "analytics_domains": [],
+  "unknown_third_party_domains": [
+    "ecp.yusercontent.com"
+  ]
+}
