@@ -7,7 +7,7 @@ from datetime import datetime
 
 from jinja2 import Template
 
-PROVIDERS = ["gmail", "outlook", "protonmail", "tutanota"]
+PROVIDERS = ["gmail", "yahoo", "protonmail", "tutanota"]
 PHASES = ["account_creation", "idle", "active_usage", "tracker_test"]
 
 PHASE_DESCRIPTIONS = {

@@ -4,550 +4,2192 @@
   <meta charset="UTF-8">
   <title>Email Privacy Analysis Report</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 2rem; color: #222; background: #fafafa; }
-    h1 { color: #1a1a2e; border-bottom: 3px solid #e94560; padding-bottom: .4rem; }
-    h2 { color: #16213e; margin-top: 2rem; }
-    h3 { color: #0f3460; }
-    .team { font-size: .95rem; color: #555; margin-bottom: 1.5rem; }
-    table { border-collapse: collapse; width: 100%; margin: 1rem 0; background: #fff; }
-    th { background: #1a1a2e; color: #fff; padding: .5rem .8rem; text-align: left; }
-    td { border: 1px solid #ddd; padding: .45rem .8rem; }
-    tr:nth-child(even) td { background: #f2f2f2; }
-    .verdict-good { color: #2ecc71; font-weight: bold; }
-    .verdict-bad  { color: #e74c3c; font-weight: bold; }
-    .domain-list { font-size: .85rem; color: #444; }
-    .tag { display: inline-block; border-radius: 3px; padding: 1px 6px; font-size: .8rem;
-           margin: 1px; color: #fff; }
-    .tag-advertising   { background: #e74c3c; }
-    .tag-analytics     { background: #e67e22; }
-    .tag-social        { background: #3498db; }
-    .tag-fingerprinting{ background: #9b59b6; }
-    .tag-known_tracker { background: #c0392b; }
-    .tag-cdn           { background: #27ae60; }
-    .tag-unknown_third_party { background: #7f8c8d; }
-    .missing { color: #aaa; font-style: italic; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 12px; color: #111; background: #fff; padding: 2.5rem 3rem; max-width: 1400px; margin: 0 auto; }
+    .report-title { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: #000; margin-bottom: 4px; }
+    .report-subtitle { font-size: 12px; color: #444; margin-bottom: 4px; }
+    .report-meta { font-size: 10px; color: #777; letter-spacing: 0.4px; margin-bottom: 2.5rem; border-bottom: 2px solid #000; padding-bottom: 8px; }
+    .section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #000; margin: 2.5rem 0 0.6rem; padding-bottom: 3px; border-bottom: 1px solid #000; }
+    .subsection-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #333; margin: 1.5rem 0 0.4rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 0.25rem; }
+    thead tr { border-bottom: 1.5px solid #000; }
+    th { text-align: left; padding: 5px 10px; font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #000; background: #f7f7f7; }
+    th:not(:first-child) { text-align: right; }
+    td { padding: 5px 10px; border-bottom: 1px solid #e8e8e8; color: #111; }
+    td:not(:first-child) { text-align: right; }
+    tr:last-child td { border-bottom: 2px solid #000; }
+    tr:hover td { background: #fafafa; }
+    .phase-label { font-weight: 600; color: #000; }
+    .missing { color: #bbb; }
+    .high { color: #b91c1c; font-weight: 700; }
+    .low { color: #15803d; font-weight: 700; }
+    .mid { color: #b45309; font-weight: 700; }
+    .leak-yes { color: #b91c1c; font-weight: 700; }
+    .leak-no { color: #15803d; }
+    .verdict-good { color: #15803d; font-weight: 700; }
+    .verdict-bad { color: #b91c1c; font-weight: 700; }
+    .domain-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 1.5rem; }
+    .domain-table th { background: #f7f7f7; border-bottom: 1.5px solid #000; padding: 4px 10px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .domain-table td { padding: 4px 10px; border-bottom: 1px solid #ebebeb; vertical-align: top; }
+    .domain-table tr:last-child td { border-bottom: 2px solid #000; }
+    .domain-table .provider-col { font-weight: 700; text-transform: capitalize; width: 100px; }
+    .domain-table .phase-col { color: #555; width: 120px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .cat-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+    .cat-advertising { background: #b91c1c; }
+    .cat-analytics { background: #c2410c; }
+    .cat-social { background: #1d4ed8; }
+    .cat-fingerprinting { background: #6d28d9; }
+    .cat-known_tracker { background: #7f1d1d; }
+    .cat-cdn { background: #166534; }
+    .cat-unknown_third_party { background: #6b7280; }
+    .cat-first_party { background: #000; }
+    .domain-entry { display: inline-block; font-size: 10px; margin: 1px 6px 1px 0; color: #111; }
+    .legend-row { display: flex; gap: 20px; margin: 0.75rem 0 1rem; font-size: 10px; color: #333; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .no-data { color: #aaa; font-style: italic; font-size: 10px; }
+    .footer { margin-top: 3rem; padding-top: 8px; border-top: 1px solid #ccc; font-size: 9px; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; }
+    .finding-box { border-left: 3px solid #000; padding: 8px 12px; margin: 6px 0; background: #fafafa; font-size: 11px; line-height: 1.5; }
+    .finding-box.positive { border-left-color: #15803d; }
+    .finding-box.negative { border-left-color: #b91c1c; }
+    .finding-box.neutral { border-left-color: #6b7280; }
+    .finding-box .finding-label { font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 1rem; }
+    .provider-card { border: 1px solid #e8e8e8; padding: 12px; }
+    .provider-card h3 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e8e8e8; padding-bottom: 6px; margin-bottom: 8px; }
+    .stat-row { display: flex; justify-content: space-between; font-size: 10px; padding: 2px 0; border-bottom: 1px solid #f0f0f0; }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-label { color: #555; }
+    .stat-value { font-weight: 600; }
+    .phase-desc { font-size: 10px; color: #666; font-style: italic; margin-bottom: 0.5rem; }
+    .bar-container { display: flex; align-items: center; gap: 8px; }
+    .bar { height: 8px; background: #000; display: inline-block; min-width: 2px; }
+    .bar-gmail { background: #4285f4; }
+    .bar-outlook { background: #0078d4; }
+    .bar-protonmail { background: #6d4aff; }
+    .bar-tutanota { background: #c20000; }
+    .bar-label { font-size: 10px; color: #555; min-width: 30px; }
+    .toc { margin: 1rem 0 2rem; font-size: 11px; }
+    .toc a { color: #000; text-decoration: none; display: block; padding: 2px 0; border-bottom: 1px dotted #ddd; }
+    .toc a:hover { text-decoration: underline; }
+    .toc-section { font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 8px; margin-bottom: 2px; color: #555; }
+    .badge { display: inline-block; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 2px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .badge-red { background: #fee2e2; color: #b91c1c; }
+    .badge-green { background: #dcfce7; color: #15803d; }
+    .badge-gray { background: #f3f4f6; color: #6b7280; }
+    .badge-yellow { background: #fef9c3; color: #854d0e; }
+    summary { cursor: pointer; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 4px 0; }
+    details { margin: 4px 0; }
+    .note { font-size: 10px; color: #666; font-style: italic; margin: 4px 0 8px; }
   </style>
 </head>
 <body>
 
-<h1>Email Privacy Analysis — Network Traffic Study</h1>
-<div class="team">
-  Northwestern University CS Research Project &nbsp;|&nbsp;
-  Team: Andre (Gmail) &bull; Daniel (Outlook) &bull; Rishi (ProtonMail) &bull; Ryan (Tutanota)
-</div>
+  <div class="report-title">Email Privacy Analysis — Network Traffic Study</div>
+  <div class="report-subtitle">A comparative measurement of network-level data collection across four email providers</div>
+  <div class="report-meta">
+    Northwestern University &nbsp;·&nbsp; Andre Washington &nbsp;·&nbsp; Daniel Rivero &nbsp;·&nbsp; Rishi Ramaiya &nbsp;·&nbsp; Ryan Rosu
+    &nbsp;·&nbsp; Generated May 31, 2026 at 09:32 PM
+  </div>
 
-<h2>Summary: Total Requests by Provider &amp; Phase</h2>
-<table>
-  <tr>
-    <th>Phase</th>
-    <th>Gmail</th><th>Outlook</th><th>Protonmail</th><th>Tutanota</th>
-  </tr>
-  
-  <tr>
-    <td><strong>Account Creation</strong></td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    <td><strong>Idle</strong></td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    <td><strong>Active Usage</strong></td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-    <td>
-      
-        120
-      
-    </td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    <td><strong>Tracker Test</strong></td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-  </tr>
-  
-</table>
+  <!-- TABLE OF CONTENTS -->
+  <div class="section-title">Contents</div>
+  <div class="toc">
+    <div class="toc-section">Overview</div>
+    <a href="#methodology">Methodology &amp; Experimental Design</a>
+    <a href="#key-findings">Key Findings Summary</a>
+    <div class="toc-section">Quantitative Results</div>
+    <a href="#total-requests">Total Requests by Provider and Phase</a>
+    <a href="#unique-domains">Unique Domains Contacted</a>
+    <a href="#third-party">Third-Party Domains Contacted</a>
+    <a href="#browser-noise">Browser Noise Filtered</a>
+    <a href="#category-breakdown">Request Category Breakdown</a>
+    <a href="#email-leaks">Email Address Leak Detection</a>
+    <a href="#data-volume">Data Volume</a>
+    <div class="toc-section">Qualitative Analysis</div>
+    <a href="#domain-breakdown">Third-Party Domain Breakdown by Provider</a>
+    <a href="#provider-profiles">Provider Profiles</a>
+    <a href="#tracker-test">Tracker Test Results</a>
+    <a href="#encryption">Encryption Assessment</a>
+    <a href="#limitations">Methodology Limitations</a>
+  </div>
 
-<h2>Summary: Unique Domains by Provider &amp; Phase</h2>
-<table>
-  <tr>
-    <th>Phase</th>
-    <th>Gmail</th><th>Outlook</th><th>Protonmail</th><th>Tutanota</th>
-  </tr>
+  <!-- METHODOLOGY -->
+  <div class="section-title" id="methodology">Methodology &amp; Experimental Design</div>
+  <p style="font-size:11px;line-height:1.6;margin-bottom:0.75rem;">
+    All traffic was captured using mitmproxy acting as a TLS-intercepting proxy on a clean Ubuntu 26.04 virtual machine. Firefox was configured to route all traffic through the proxy, and the mitmproxy CA certificate was installed in the browser. A fresh VM snapshot was restored before each experiment to ensure identical baseline conditions. Browser background noise from Firefox itself (telemetry, safe browsing, updates) was identified and filtered before analysis. Domains were classified using the EasyPrivacy and Disconnect.me tracker databases.
+  </p>
+  <table>
+    <thead><tr><th>Phase</th><th style="text-align:left;">Description</th></tr></thead>
+    <tbody>
+    
+    <tr>
+      <td class="phase-label">Account Creation</td>
+      <td style="text-align:left;">Capture from first page load through completed account setup</td>
+    </tr>
+    
+    <tr>
+      <td class="phase-label">Idle</td>
+      <td style="text-align:left;">15 minutes with inbox open and no user interaction</td>
+    </tr>
+    
+    <tr>
+      <td class="phase-label">Active Usage</td>
+      <td style="text-align:left;">Composing, sending, and replying to email</td>
+    </tr>
+    
+    <tr>
+      <td class="phase-label">Tracker Test</td>
+      <td style="text-align:left;">Opening an email containing a web bug / canary token tracking pixel</td>
+    </tr>
+    
+    </tbody>
+  </table>
+
+  <!-- KEY FINDINGS -->
+  <div class="section-title" id="key-findings">Key Findings Summary</div>
+
+  <div class="finding-box negative">
+    <div class="finding-label">Gmail idle activity</div>
+    Gmail generated 1,157 requests and contacted 10 third-party domains during 15 minutes of zero user interaction — more traffic than during account creation. Google Analytics, Tag Manager, and four DoubleClick subdomains were active with no user activity.
+  </div>
+
+  <div class="finding-box negative">
+    <div class="finding-label">Password in plaintext request body</div>
+    During Gmail account creation, the test account password appeared in plaintext in a POST request body. While protected by TLS in transit, this confirms Google's servers receive and process the password in readable form before hashing.
+  </div>
+
+  <div class="finding-box negative">
+    <div class="finding-label">Privacy providers contact Google infrastructure</div>
+    Both ProtonMail and Tutanota contacted Google advertising infrastructure (googleadservices.com, googletagmanager.com) during account creation, despite marketing themselves as Google alternatives.
+  </div>
+
+  <div class="finding-box positive">
+    <div class="finding-label">Tutanota idle is remarkably clean</div>
+    Tutanota generated only 40 requests and contacted 1 domain during idle — 29x fewer requests than Gmail. The single domain contacted was its own first-party API.
+  </div>
+
+  <div class="finding-box neutral">
+    <div class="finding-label">Gmail proxies tracking pixels</div>
+    When a canary token web bug was opened in Gmail, the request to the tracking server came from IP 74.125.215.66 (Google's image proxy) rather than the user's IP. Gmail protects users from third-party IP tracking but gains visibility into all external URLs in user emails.
+  </div>
+
+  <div class="finding-box neutral">
+    <div class="finding-label">ProtonMail account creation has most third-party domains</div>
+    ProtonMail contacted 19 third-party domains during account creation — more than Gmail (5). This is largely explained by payment processors (Stripe, Chargebee) and hCaptcha, but raises questions about the gap between privacy claims and signup behavior.
+  </div>
+
+  <div class="finding-box positive">
+    <div class="finding-label">Tutanota email leak false positives confirmed</div>
+    The classifier flagged 3 email address detections for Tutanota account creation. Manual inspection confirmed all three were legitimate API calls to app.tuta.com (Tutanota's own server) required to create the account — not leaks to third parties.
+  </div>
+
+  <!-- TOTAL REQUESTS -->
+  <div class="section-title" id="total-requests">Total Requests by Provider and Phase</div>
+  <p class="note">All requests captured by mitmproxy including first-party, third-party, and filtered browser noise.</p>
+  <table>
+    <thead><tr><th>Phase</th><th>Gmail</th><th>Yahoo</th><th>Protonmail</th><th>Tutanota</th></tr></thead>
+    <tbody>
+    
+    <tr>
+      <td class="phase-label">Account Creation</td>
+      
+      <td>
+        
+          
+          <span class="mid">498</span>
+          
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="high">1165</span>
+          
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="mid">321</span>
+          
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="mid">360</span>
+          
+        
+      </td>
+      
+    </tr>
+    
+    <tr>
+      <td class="phase-label">Idle</td>
+      
+      <td>
+        
+          
+          <span class="high">1157</span>
+          
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="high">823</span>
+          
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="low">139</span>
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="low">40</span>
+        
+      </td>
+      
+    </tr>
+    
+    <tr>
+      <td class="phase-label">Active Usage</td>
+      
+      <td>
+        
+          
+          <span class="high">1370</span>
+          
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="low">131</span>
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="low">120</span>
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="low">63</span>
+        
+      </td>
+      
+    </tr>
+    
+    <tr>
+      <td class="phase-label">Tracker Test</td>
+      
+      <td>
+        
+          
+          <span class="high">1084</span>
+          
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="high">1165</span>
+          
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="low">52</span>
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="low">80</span>
+        
+      </td>
+      
+    </tr>
+    
+    </tbody>
+  </table>
+
+  <!-- UNIQUE DOMAINS -->
+  <div class="section-title" id="unique-domains">Unique Domains Contacted</div>
+  <p class="note">Count of distinct hostnames contacted across all requests in each phase, including first-party domains.</p>
+  <table>
+    <thead><tr><th>Phase</th><th>Gmail</th><th>Yahoo</th><th>Protonmail</th><th>Tutanota</th></tr></thead>
+    <tbody>
+    
+    <tr>
+      <td class="phase-label">Account Creation</td>
+      <td>30</td><td>216</td><td>25</td><td>13</td>
+    </tr>
+    
+    <tr>
+      <td class="phase-label">Idle</td>
+      <td>38</td><td>193</td><td>11</td><td>1</td>
+    </tr>
+    
+    <tr>
+      <td class="phase-label">Active Usage</td>
+      <td>52</td><td>12</td><td>4</td><td>2</td>
+    </tr>
+    
+    <tr>
+      <td class="phase-label">Tracker Test</td>
+      <td>40</td><td>216</td><td>3</td><td>2</td>
+    </tr>
+    
+    </tbody>
+  </table>
+
+  <!-- THIRD PARTY DOMAINS -->
+  <div class="section-title" id="third-party">Third-Party Domains Contacted</div>
+  <p class="note">Domains not belonging to the provider's own infrastructure, after browser noise filtering.</p>
+  <table>
+    <thead><tr><th>Phase</th><th>Gmail</th><th>Yahoo</th><th>Protonmail</th><th>Tutanota</th></tr></thead>
+    <tbody>
+    
+    <tr>
+      <td class="phase-label">Account Creation</td>
+      
+      <td>
+        
+          
+          <span class="low">5</span>
+          
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="high">208</span>
+          
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="high">19</span>
+          
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="high">13</span>
+          
+        
+      </td>
+      
+    </tr>
+    
+    <tr>
+      <td class="phase-label">Idle</td>
+      
+      <td>
+        
+          
+          <span class="mid">10</span>
+          
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="high">193</span>
+          
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="mid">8</span>
+          
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="low">1</span>
+          
+        
+      </td>
+      
+    </tr>
+    
+    <tr>
+      <td class="phase-label">Active Usage</td>
+      
+      <td>
+        
+          
+          <span class="high">22</span>
+          
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="high">12</span>
+          
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="low">1</span>
+          
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="low">2</span>
+          
+        
+      </td>
+      
+    </tr>
+    
+    <tr>
+      <td class="phase-label">Tracker Test</td>
+      
+      <td>
+        
+          
+          <span class="high">13</span>
+          
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="high">208</span>
+          
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="low">2</span>
+          
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="low">2</span>
+          
+        
+      </td>
+      
+    </tr>
+    
+    </tbody>
+  </table>
+
+  <!-- BROWSER NOISE -->
+  <div class="section-title" id="browser-noise">Browser Noise Requests Filtered</div>
+  <p class="note">Requests from Firefox itself (telemetry, safe browsing, push notifications) removed before analysis to isolate provider behavior.</p>
+  <table>
+    <thead><tr><th>Phase</th><th>Gmail</th><th>Yahoo</th><th>Protonmail</th><th>Tutanota</th></tr></thead>
+    <tbody>
+    
+    <tr>
+      <td class="phase-label">Account Creation</td>
+      <td>60</td><td>0</td><td>0</td><td>37</td>
+    </tr>
+    
+    <tr>
+      <td class="phase-label">Idle</td>
+      <td>74</td><td>0</td><td>0</td><td>7</td>
+    </tr>
+    
+    <tr>
+      <td class="phase-label">Active Usage</td>
+      <td>0</td><td>0</td><td>0</td><td>0</td>
+    </tr>
+    
+    <tr>
+      <td class="phase-label">Tracker Test</td>
+      <td>111</td><td>0</td><td>0</td><td>0</td>
+    </tr>
+    
+    </tbody>
+  </table>
+
+  <!-- CATEGORY BREAKDOWN -->
+  <div class="section-title" id="category-breakdown">Request Category Breakdown</div>
+  <p class="note">Classification of all captured requests by category using EasyPrivacy and Disconnect.me databases.</p>
+  <div class="legend-row">
+    <span class="legend-item"><span class="cat-dot cat-first_party"></span>First party</span>
+    <span class="legend-item"><span class="cat-dot cat-advertising"></span>Advertising</span>
+    <span class="legend-item"><span class="cat-dot cat-analytics"></span>Analytics</span>
+    <span class="legend-item"><span class="cat-dot cat-known_tracker"></span>Known tracker</span>
+    <span class="legend-item"><span class="cat-dot cat-unknown_third_party"></span>Unknown third party</span>
+  </div>
   
-  <tr>
-    <td><strong>Account Creation</strong></td>
+  <div class="subsection-title">Account Creation</div>
+  <p class="phase-desc">Capture from first page load through completed account setup</p>
+  <table>
+    <thead><tr>
+      <th>Category</th>
+      <th>Gmail</th><th>Yahoo</th><th>Protonmail</th><th>Tutanota</th>
+    </tr></thead>
+    <tbody>
     
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
     
-    <td>
+    <tr>
+      <td><span class="cat-dot cat-first_party"></span>First Party</td>
       
-        <span class="missing">—</span>
+      <td>
+        
+          485
+        
+      </td>
       
-    </td>
+      <td>
+        
+          14
+        
+      </td>
+      
+      <td>
+        
+          232
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+    </tr>
     
-    <td>
+    <tr>
+      <td><span class="cat-dot cat-advertising"></span>Advertising</td>
       
-        <span class="missing">—</span>
+      <td>
+        
+          0
+        
+      </td>
       
-    </td>
+      <td>
+        
+          0
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+    </tr>
     
-    <td>
+    <tr>
+      <td><span class="cat-dot cat-analytics"></span>Analytics</td>
       
-        <span class="missing">—</span>
+      <td>
+        
+          0
+        
+      </td>
       
-    </td>
+      <td>
+        
+          0
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+    </tr>
     
-  </tr>
+    <tr>
+      <td><span class="cat-dot cat-known_tracker"></span>Known Tracker</td>
+      
+      <td>
+        
+          8
+        
+      </td>
+      
+      <td>
+        
+          732
+        
+      </td>
+      
+      <td>
+        
+          75
+        
+      </td>
+      
+      <td>
+        
+          59
+        
+      </td>
+      
+    </tr>
+    
+    <tr>
+      <td><span class="cat-dot cat-unknown_third_party"></span>Unknown Third Party</td>
+      
+      <td>
+        
+          5
+        
+      </td>
+      
+      <td>
+        
+          419
+        
+      </td>
+      
+      <td>
+        
+          14
+        
+      </td>
+      
+      <td>
+        
+          301
+        
+      </td>
+      
+    </tr>
+    
+    </tbody>
+  </table>
   
-  <tr>
-    <td><strong>Idle</strong></td>
+  <div class="subsection-title">Idle</div>
+  <p class="phase-desc">15 minutes with inbox open and no user interaction</p>
+  <table>
+    <thead><tr>
+      <th>Category</th>
+      <th>Gmail</th><th>Yahoo</th><th>Protonmail</th><th>Tutanota</th>
+    </tr></thead>
+    <tbody>
     
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
     
-    <td>
+    <tr>
+      <td><span class="cat-dot cat-first_party"></span>First Party</td>
       
-        <span class="missing">—</span>
+      <td>
+        
+          1125
+        
+      </td>
       
-    </td>
+      <td>
+        
+          0
+        
+      </td>
+      
+      <td>
+        
+          87
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+    </tr>
     
-    <td>
+    <tr>
+      <td><span class="cat-dot cat-advertising"></span>Advertising</td>
       
-        <span class="missing">—</span>
+      <td>
+        
+          0
+        
+      </td>
       
-    </td>
+      <td>
+        
+          0
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+    </tr>
     
-    <td>
+    <tr>
+      <td><span class="cat-dot cat-analytics"></span>Analytics</td>
       
-        <span class="missing">—</span>
+      <td>
+        
+          0
+        
+      </td>
       
-    </td>
+      <td>
+        
+          0
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+    </tr>
     
-  </tr>
+    <tr>
+      <td><span class="cat-dot cat-known_tracker"></span>Known Tracker</td>
+      
+      <td>
+        
+          26
+        
+      </td>
+      
+      <td>
+        
+          278
+        
+      </td>
+      
+      <td>
+        
+          29
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+    </tr>
+    
+    <tr>
+      <td><span class="cat-dot cat-unknown_third_party"></span>Unknown Third Party</td>
+      
+      <td>
+        
+          6
+        
+      </td>
+      
+      <td>
+        
+          545
+        
+      </td>
+      
+      <td>
+        
+          23
+        
+      </td>
+      
+      <td>
+        
+          40
+        
+      </td>
+      
+    </tr>
+    
+    </tbody>
+  </table>
   
-  <tr>
-    <td><strong>Active Usage</strong></td>
+  <div class="subsection-title">Active Usage</div>
+  <p class="phase-desc">Composing, sending, and replying to email</p>
+  <table>
+    <thead><tr>
+      <th>Category</th>
+      <th>Gmail</th><th>Yahoo</th><th>Protonmail</th><th>Tutanota</th>
+    </tr></thead>
+    <tbody>
     
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
     
-    <td>
+    <tr>
+      <td><span class="cat-dot cat-first_party"></span>First Party</td>
       
-        <span class="missing">—</span>
+      <td>
+        
+          1211
+        
+      </td>
       
-    </td>
+      <td>
+        
+          0
+        
+      </td>
+      
+      <td>
+        
+          119
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+    </tr>
     
-    <td>
+    <tr>
+      <td><span class="cat-dot cat-advertising"></span>Advertising</td>
       
-        4
+      <td>
+        
+          0
+        
+      </td>
       
-    </td>
+      <td>
+        
+          0
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+    </tr>
     
-    <td>
+    <tr>
+      <td><span class="cat-dot cat-analytics"></span>Analytics</td>
       
-        <span class="missing">—</span>
+      <td>
+        
+          0
+        
+      </td>
       
-    </td>
+      <td>
+        
+          0
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+    </tr>
     
-  </tr>
+    <tr>
+      <td><span class="cat-dot cat-known_tracker"></span>Known Tracker</td>
+      
+      <td>
+        
+          55
+        
+      </td>
+      
+      <td>
+        
+          123
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+    </tr>
+    
+    <tr>
+      <td><span class="cat-dot cat-unknown_third_party"></span>Unknown Third Party</td>
+      
+      <td>
+        
+          104
+        
+      </td>
+      
+      <td>
+        
+          8
+        
+      </td>
+      
+      <td>
+        
+          1
+        
+      </td>
+      
+      <td>
+        
+          63
+        
+      </td>
+      
+    </tr>
+    
+    </tbody>
+  </table>
   
-  <tr>
-    <td><strong>Tracker Test</strong></td>
+  <div class="subsection-title">Tracker Test</div>
+  <p class="phase-desc">Opening an email containing a web bug / canary token tracking pixel</p>
+  <table>
+    <thead><tr>
+      <th>Category</th>
+      <th>Gmail</th><th>Yahoo</th><th>Protonmail</th><th>Tutanota</th>
+    </tr></thead>
+    <tbody>
     
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
     
-    <td>
+    <tr>
+      <td><span class="cat-dot cat-first_party"></span>First Party</td>
       
-        <span class="missing">—</span>
+      <td>
+        
+          1039
+        
+      </td>
       
-    </td>
+      <td>
+        
+          14
+        
+      </td>
+      
+      <td>
+        
+          50
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+    </tr>
     
-    <td>
+    <tr>
+      <td><span class="cat-dot cat-advertising"></span>Advertising</td>
       
-        <span class="missing">—</span>
+      <td>
+        
+          0
+        
+      </td>
       
-    </td>
+      <td>
+        
+          0
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+    </tr>
     
-    <td>
+    <tr>
+      <td><span class="cat-dot cat-analytics"></span>Analytics</td>
       
-        <span class="missing">—</span>
+      <td>
+        
+          0
+        
+      </td>
       
-    </td>
+      <td>
+        
+          0
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+    </tr>
     
-  </tr>
-  
-</table>
-
-<h2>Summary: Third-Party Domain Count by Provider &amp; Phase</h2>
-<table>
-  <tr>
-    <th>Phase</th>
-    <th>Gmail</th><th>Outlook</th><th>Protonmail</th><th>Tutanota</th>
-  </tr>
-  
-  <tr>
-    <td><strong>Account Creation</strong></td>
+    <tr>
+      <td><span class="cat-dot cat-known_tracker"></span>Known Tracker</td>
+      
+      <td>
+        
+          39
+        
+      </td>
+      
+      <td>
+        
+          732
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+      <td>
+        
+          0
+        
+      </td>
+      
+    </tr>
     
-    <td>
+    <tr>
+      <td><span class="cat-dot cat-unknown_third_party"></span>Unknown Third Party</td>
       
-        <span class="missing">—</span>
+      <td>
+        
+          6
+        
+      </td>
       
-    </td>
+      <td>
+        
+          419
+        
+      </td>
+      
+      <td>
+        
+          2
+        
+      </td>
+      
+      <td>
+        
+          80
+        
+      </td>
+      
+    </tr>
     
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    <td><strong>Idle</strong></td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    <td><strong>Active Usage</strong></td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-    <td>
-      
-        1
-      
-    </td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-  </tr>
-  
-  <tr>
-    <td><strong>Tracker Test</strong></td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-    <td>
-      
-        <span class="missing">—</span>
-      
-    </td>
-    
-  </tr>
-  
-</table>
-
-
-<h2>Gmail: Third-Party Domains by Category</h2>
-
-
+    </tbody>
+  </table>
   
 
+  <!-- EMAIL LEAKS -->
+  <div class="section-title" id="email-leaks">Email Address Leak Detection</div>
+  <p class="note">Regex scan of request body snippets for email address patterns. Detections require manual verification to distinguish legitimate first-party API calls from actual third-party leaks.</p>
+  <table>
+    <thead><tr><th>Phase</th><th>Gmail</th><th>Yahoo</th><th>Protonmail</th><th>Tutanota</th></tr></thead>
+    <tbody>
+    
+    <tr>
+      <td class="phase-label">Account Creation</td>
+      
+      <td>
+        
+          
+          <span class="leak-no">0</span>
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="leak-no">0</span>
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="leak-no">0</span>
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="leak-yes">3</span>
+        
+      </td>
+      
+    </tr>
+    
+    <tr>
+      <td class="phase-label">Idle</td>
+      
+      <td>
+        
+          
+          <span class="leak-no">0</span>
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="leak-no">0</span>
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="leak-no">0</span>
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="leak-yes">1</span>
+        
+      </td>
+      
+    </tr>
+    
+    <tr>
+      <td class="phase-label">Active Usage</td>
+      
+      <td>
+        
+          
+          <span class="leak-no">0</span>
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="leak-no">0</span>
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="leak-no">0</span>
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="leak-yes">3</span>
+        
+      </td>
+      
+    </tr>
+    
+    <tr>
+      <td class="phase-label">Tracker Test</td>
+      
+      <td>
+        
+          
+          <span class="leak-yes">8</span>
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="leak-no">0</span>
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="leak-no">0</span>
+        
+      </td>
+      
+      <td>
+        
+          
+          <span class="leak-yes">3</span>
+        
+      </td>
+      
+    </tr>
+    
+    </tbody>
+  </table>
   
-
+    
+      
+    
+      
+    
+      
+    
+      
+      <details>
+        <summary>Gmail — Tracker Test — 8 detection(s)</summary>
+        <table style="margin-top:6px;">
+          <thead><tr><th style="text-align:left;">Host</th><th style="text-align:left;">Path</th><th style="text-align:left;">Emails Found</th><th>Verdict</th></tr></thead>
+          <tbody>
+          
+          <tr>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">mail.google.com</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">/sync/u/0/i/s?hl=en&c=4&rt=r&pt=ji</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">QDx0f-k8PjThvrEdVNQJwQ@notifications.google.com, se82N-hIQDMUSOWn6XEf2A@notifications.google.com, rlXcIGKkRZBUCY3ukhKO9g@notifications.google.com</td>
+            <td>
+              
+                <span class="badge badge-red">Verify manually</span>
+              
+            </td>
+          </tr>
+          
+          <tr>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">peoplestack-pa.clients6.google.com</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">/$rpc/peoplestack.PeopleStackAutocompleteService/Lookup</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">nickwashi24@gmail.com</td>
+            <td>
+              
+                <span class="badge badge-red">Verify manually</span>
+              
+            </td>
+          </tr>
+          
+          <tr>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">mail.google.com</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">/sync/u/0/i/s?hl=en&c=8&rt=r&pt=ji</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">3_7GE-Qfsdj56pC-u2Bt-O1ydc9VYEDg@mail.gmail.com</td>
+            <td>
+              
+                <span class="badge badge-red">Verify manually</span>
+              
+            </td>
+          </tr>
+          
+          <tr>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">mail.google.com</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">/sync/u/0/i/s?hl=en&c=10&rt=r&pt=ji</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">3_7GE-Qfsdj56pC-u2Bt-O1ydc9VYEDg@mail.gmail.com</td>
+            <td>
+              
+                <span class="badge badge-red">Verify manually</span>
+              
+            </td>
+          </tr>
+          
+          <tr>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">mail.google.com</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">/sync/u/0/i/s?hl=en&c=14&rt=r&pt=ji</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">3_7GE-Qfsdj56pC-u2Bt-O1ydc9VYEDg@mail.gmail.com</td>
+            <td>
+              
+                <span class="badge badge-red">Verify manually</span>
+              
+            </td>
+          </tr>
+          
+          <tr>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">peoplestack-pa.clients6.google.com</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">/$rpc/peoplestack.PeopleStackAutocompleteService/Lookup</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">noreply@canarytokens.org</td>
+            <td>
+              
+                <span class="badge badge-red">Verify manually</span>
+              
+            </td>
+          </tr>
+          
+          <tr>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">mail.google.com</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">/sync/u/0/i/s?hl=en&c=15&rt=r&pt=ji</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">20260531162750.4efe4ee6c9894cba@canarytokens.org, 20260531163220.9c8ebf701e6ea1b3@canarytokens.org</td>
+            <td>
+              
+                <span class="badge badge-red">Verify manually</span>
+              
+            </td>
+          </tr>
+          
+          <tr>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">mail.google.com</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">/sync/u/0/i/s?hl=en&c=16&rt=r&pt=ji</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">20260531162750.4efe4ee6c9894cba@canarytokens.org, 20260531163220.9c8ebf701e6ea1b3@canarytokens.org</td>
+            <td>
+              
+                <span class="badge badge-red">Verify manually</span>
+              
+            </td>
+          </tr>
+          
+          </tbody>
+        </table>
+      </details>
+      
+    
   
-
+    
+      
+    
+      
+    
+      
+    
+      
+    
   
-
-
-  <p class="missing">No data collected yet.</p>
-
-
-<h2>Outlook: Third-Party Domains by Category</h2>
-
-
+    
+      
+    
+      
+    
+      
+    
+      
+    
   
-
-  
-
-  
-
-  
-
-
-  <p class="missing">No data collected yet.</p>
-
-
-<h2>Protonmail: Third-Party Domains by Category</h2>
-
-
-  
-
-  
-
-  
+    
+      
+      <details>
+        <summary>Tutanota — Account Creation — 3 detection(s)</summary>
+        <table style="margin-top:6px;">
+          <thead><tr><th style="text-align:left;">Host</th><th style="text-align:left;">Path</th><th style="text-align:left;">Emails Found</th><th>Verdict</th></tr></thead>
+          <tbody>
+          
+          <tr>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">app.tuta.com</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">/rest/tutanota/customeraccountservice</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">eptest.tuta@tutamail.com</td>
+            <td>
+              
+                <span class="badge badge-green">First-party — expected</span>
+              
+            </td>
+          </tr>
+          
+          <tr>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">app.tuta.com</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">/rest/sys/sessionservice</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">eptest.tuta@tutamail.com</td>
+            <td>
+              
+                <span class="badge badge-green">First-party — expected</span>
+              
+            </td>
+          </tr>
+          
+          <tr>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">app.tuta.com</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">/rest/sys/sessionservice</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">eptest.tuta@tutamail.com</td>
+            <td>
+              
+                <span class="badge badge-green">First-party — expected</span>
+              
+            </td>
+          </tr>
+          
+          </tbody>
+        </table>
+      </details>
+      
+    
+      
+      <details>
+        <summary>Tutanota — Idle — 1 detection(s)</summary>
+        <table style="margin-top:6px;">
+          <thead><tr><th style="text-align:left;">Host</th><th style="text-align:left;">Path</th><th style="text-align:left;">Emails Found</th><th>Verdict</th></tr></thead>
+          <tbody>
+          
+          <tr>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">app.tuta.com</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">/rest/sys/sessionservice</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">eptest.tuta@tutamail.com</td>
+            <td>
+              
+                <span class="badge badge-green">First-party — expected</span>
+              
+            </td>
+          </tr>
+          
+          </tbody>
+        </table>
+      </details>
+      
+    
+      
+      <details>
+        <summary>Tutanota — Active Usage — 3 detection(s)</summary>
+        <table style="margin-top:6px;">
+          <thead><tr><th style="text-align:left;">Host</th><th style="text-align:left;">Path</th><th style="text-align:left;">Emails Found</th><th>Verdict</th></tr></thead>
+          <tbody>
+          
+          <tr>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">app.tuta.com</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">/rest/sys/sessionservice</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">eptest.tuta@tutamail.com</td>
+            <td>
+              
+                <span class="badge badge-green">First-party — expected</span>
+              
+            </td>
+          </tr>
+          
+          <tr>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">app.tuta.com</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">/rest/tutanota/draftservice</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">eptest.tuta@tutamail.com</td>
+            <td>
+              
+                <span class="badge badge-green">First-party — expected</span>
+              
+            </td>
+          </tr>
+          
+          <tr>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">app.tuta.com</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">/rest/tutanota/draftservice</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">OtkNS-k--J-9@tutamail.com, eptest.tuta@tutamail.com</td>
+            <td>
+              
+                <span class="badge badge-green">First-party — expected</span>
+              
+            </td>
+          </tr>
+          
+          </tbody>
+        </table>
+      </details>
+      
+    
+      
+      <details>
+        <summary>Tutanota — Tracker Test — 3 detection(s)</summary>
+        <table style="margin-top:6px;">
+          <thead><tr><th style="text-align:left;">Host</th><th style="text-align:left;">Path</th><th style="text-align:left;">Emails Found</th><th>Verdict</th></tr></thead>
+          <tbody>
+          
+          <tr>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">app.tuta.com</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">/rest/sys/sessionservice</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">eptest.tuta@tutamail.com</td>
+            <td>
+              
+                <span class="badge badge-green">First-party — expected</span>
+              
+            </td>
+          </tr>
+          
+          <tr>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">app.tuta.com</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">/rest/tutanota/draftservice</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">eptest.tuta@tutamail.com</td>
+            <td>
+              
+                <span class="badge badge-green">First-party — expected</span>
+              
+            </td>
+          </tr>
+          
+          <tr>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">app.tuta.com</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">/rest/tutanota/senddraftservice</td>
+            <td style="text-align:left;font-family:monospace;font-size:10px;">eptest.tuta@tutamail.com</td>
+            <td>
+              
+                <span class="badge badge-green">First-party — expected</span>
+              
+            </td>
+          </tr>
+          
+          </tbody>
+        </table>
+      </details>
+      
     
   
 
-  
+  <!-- DATA VOLUME -->
+  <div class="section-title" id="data-volume">Data Volume (Request + Response Sizes)</div>
+  <p class="note">Total bytes sent and received per phase. Larger numbers indicate more data transferred to/from provider and third-party servers.</p>
+  <table>
+    <thead><tr><th>Phase</th><th>Gmail</th><th>Yahoo</th><th>Protonmail</th><th>Tutanota</th></tr></thead>
+    <tbody>
+    
+    <tr>
+      <td class="phase-label">Account Creation</td>
+      
+      <td>
+        
+          
+          
+          —
+        
+      </td>
+      
+      <td>
+        
+          
+          
+          —
+        
+      </td>
+      
+      <td>
+        
+          
+          
+          —
+        
+      </td>
+      
+      <td>
+        
+          
+          
+          —
+        
+      </td>
+      
+    </tr>
+    
+    <tr>
+      <td class="phase-label">Idle</td>
+      
+      <td>
+        
+          
+          
+          —
+        
+      </td>
+      
+      <td>
+        
+          
+          
+          —
+        
+      </td>
+      
+      <td>
+        
+          
+          
+          —
+        
+      </td>
+      
+      <td>
+        
+          
+          
+          —
+        
+      </td>
+      
+    </tr>
+    
+    <tr>
+      <td class="phase-label">Active Usage</td>
+      
+      <td>
+        
+          
+          
+          —
+        
+      </td>
+      
+      <td>
+        
+          
+          
+          —
+        
+      </td>
+      
+      <td>
+        
+          
+          
+          —
+        
+      </td>
+      
+      <td>
+        
+          
+          
+          —
+        
+      </td>
+      
+    </tr>
+    
+    <tr>
+      <td class="phase-label">Tracker Test</td>
+      
+      <td>
+        
+          
+          
+          —
+        
+      </td>
+      
+      <td>
+        
+          
+          
+          —
+        
+      </td>
+      
+      <td>
+        
+          
+          
+          —
+        
+      </td>
+      
+      <td>
+        
+          
+          
+          —
+        
+      </td>
+      
+    </tr>
+    
+    </tbody>
+  </table>
 
-
-  
+  <!-- DOMAIN BREAKDOWN -->
+  <div class="section-title" id="domain-breakdown">Third-Party Domain Breakdown by Provider</div>
+  <div class="legend-row">
+    <span class="legend-item"><span class="cat-dot cat-advertising"></span>Advertising</span>
+    <span class="legend-item"><span class="cat-dot cat-analytics"></span>Analytics</span>
+    <span class="legend-item"><span class="cat-dot cat-social"></span>Social</span>
+    <span class="legend-item"><span class="cat-dot cat-fingerprinting"></span>Fingerprinting</span>
+    <span class="legend-item"><span class="cat-dot cat-known_tracker"></span>Known tracker</span>
+    <span class="legend-item"><span class="cat-dot cat-cdn"></span>CDN</span>
+    <span class="legend-item"><span class="cat-dot cat-unknown_third_party"></span>Unknown third party</span>
+  </div>
+  <table class="domain-table">
+    <thead><tr><th>Provider</th><th>Phase</th><th>Third-party domains</th></tr></thead>
+    <tbody>
     
-  
-    
-  
-    
-    <h3>Active Usage</h3>
-    <div class="domain-list">
       
         
-        <span class="tag tag-unknown_third_party">push.services.mozilla.com</span>
+        <tr>
+          <td class="provider-col">Gmail</td>
+          <td class="phase-col">account creation</td>
+          <td><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>accounts.youtube.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ad.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>googleads.g.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>lh3.googleusercontent.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.googleadservices.com</span></td>
+        </tr>
+        
       
-    </div>
+        
+        <tr>
+          <td class="provider-col">Gmail</td>
+          <td class="phase-col">idle</td>
+          <td><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>2507573.fls.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>accounts.youtube.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ad.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>csp.withgoogle.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>googleads.g.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>lh3.googleusercontent.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ssl.google-analytics.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>stats.g.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.googleadservices.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.googletagmanager.com</span></td>
+        </tr>
+        
+      
+        
+        <tr>
+          <td class="provider-col">Gmail</td>
+          <td class="phase-col">active usage</td>
+          <td><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>2507573.fls.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>accounts.youtube.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ad.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ads.mozilla.org</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>content-signature-2.cdn.mozilla.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>csp.withgoogle.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>detectportal.firefox.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>firefox-settings-attachments.cdn.mozilla.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>firefox.settings.services.mozilla.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>googleads.g.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>img.youtube.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>incoming.telemetry.mozilla.org</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>lh3.googleusercontent.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>location.services.mozilla.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>prod.ohttp-gateway.prod.webservices.mozgcp.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>push.services.mozilla.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ssl.google-analytics.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>static.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>stats.g.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.googleadservices.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.googletagmanager.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.youtube.com</span></td>
+        </tr>
+        
+      
+        
+        <tr>
+          <td class="provider-col">Gmail</td>
+          <td class="phase-col">tracker test</td>
+          <td><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>2507573.fls.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>accounts.youtube.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ad.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ci3.googleusercontent.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>csp.withgoogle.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>googleads.g.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>img.youtube.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>lh3.googleusercontent.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ssl.google-analytics.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>stats.g.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.googleadservices.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.googletagmanager.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.youtube.com</span></td>
+        </tr>
+        
+      
     
+      
+        
+        <tr>
+          <td class="provider-col">Yahoo</td>
+          <td class="phase-col">account creation</td>
+          <td><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>2507573.fls.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>a50ff6f00c0e011d72c18854fcf1099f.safeframe.googlesyndication.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>aax-eu.amazon-adsystem.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>accounts.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ad.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ad.turn.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ads-img.mozilla.org</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ads.pubmatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ads.scorecardresearch.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ads.yieldmo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>adservice.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ag.gbc.criteo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>analytics.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>api.taboola.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>appleid.apple.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>appleid.cdn-apple.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>b1sync.zemanta.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>bh.contextweb.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>bpi.rtactivate.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>bttrack.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>c1.adform.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>c21lg-d.media.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>c2shb-oao.ssp.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cadmus.script.ac</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>capi.connatix.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cdn.doubleverify.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cdn.js7k.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cdn.taboola.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ce.lijit.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cgrid.criteo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>client.hsprotect.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cm.g.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>collector-pxzc5j78di.hsprotect.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>contextual.media.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>crb.kargo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>crcldu.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>creativecdn.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cs.admanmedia.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cs.media.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>csp.withgoogle.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>csync.loopme.me</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ct.pinterest.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>detectportal.firefox.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>difw.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>dis.criteo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>display.bidder.taboola.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>dmp.brand-display.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>dnacdn.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>dsum-sec.casalemedia.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>dt.adsafeprotected.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>dtproxy5.yahoo.nc.clients.ipqs.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>eb2.3lift.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>edge-mcdn.secure.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>encrypted-tbn0.gstatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ep1.adtrafficquality.google</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ep2.adtrafficquality.google</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>et-c-ash.33across.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>eus.rubiconproject.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>exchange.kueezrtb.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>exchange.mediavine.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>fastlane.rubiconproject.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>feedbackws.icloud.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>fonts.googleapis.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>fonts.gstatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>fw.adsafeprotected.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>gat.da1.us.criteo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>gem.gbc.criteo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>geo.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>googleads.g.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>googleads4.g.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>gpt.mail.yahoo.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>grid-bidder.criteo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>grid-mercury.criteo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>guce.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>gum.criteo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>hb.trustedstack.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>hbopenbid.pubmatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>hbx.media.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>htlb.casalemedia.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>i.clean.gg</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>i.liadm.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ib.3lift.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ib.adnxs.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>id.rlcdn.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>idmsa.apple.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>idsync.rlcdn.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>idx.liadm.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>iframe.hsprotect.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>image4.pubmatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>image6.pubmatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>image8.pubmatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>img.youtube.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>incoming.telemetry.mozilla.org</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>jadserve.postrelease.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>jsapi.login.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>jsconfig.adsafeprotected.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>lg1.hb.trustedstack.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>lh3.googleusercontent.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>location.services.mozilla.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>login.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>logincdn.msftauth.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>mail.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>mail.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>match.adsby.bidtheatre.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>match.adsrvr.org</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>match.deepintent.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>match.sharethrough.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>media-net-cookie-sync.claritas.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>medianet-match.dotomi.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>mozilla-ohttp.fastly-edge.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>noa.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ogads-pa.clients6.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>opus.analytics.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>outlook.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>p.rfihub.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pagead2.googlesyndication.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>partners.tremorhub.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pbd.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pbs-cs.minutemedia-prebid.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pbs-yahoo-us.ay.delivery</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pbs.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pixel-us-east.rubiconproject.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pixel.adsafeprotected.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pixel.rubiconproject.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pixel.tapad.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>play.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pn.ybp.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>prebid-server.rubiconproject.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>prebid.media.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>push.services.mozilla.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pxl.iqm.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>qvdt3feo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>r.bidswitch.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>rp.liadm.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>rtb-csync.smartadserver.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>rtb.mfadsrvr.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>rtb.openx.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>rtb0.doubleverify.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>s.ad.smaato.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>s.amazon-adsystem.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>s.company-target.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>s.seedtag.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>s.yimg.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>s0.2mdn.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>safebrowsing.googleapis.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sb.scorecardresearch.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>secure-assets.rubiconproject.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>secure.adnxs.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>securepubads.g.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>setup.icloud.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sid.storygize.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>signal-service.pbs.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>signaler-pa.googleapis.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>simage2.pubmatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ssbsync.smartadserver.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ssc-cms.33across.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ssl.google-analytics.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ssl.gstatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ssp-sync.criteo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ssp.disqus.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ssum-sec.casalemedia.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>static.adsafeprotected.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>stats.g.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>stk.hsprotect.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>storage.googleapis.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync-pm.ads.yieldmo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync-tm.everesttech.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.1rx.io</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.aniview.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.bfmio.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.ipredictive.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.kueezrtb.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.outbrain.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.resetdigital.co</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.srv.stackadapt.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.taboola.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.targeting.unrulymedia.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>t.adx.opera.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>t.oa.opera.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>tlx.3lift.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>token.rubiconproject.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>tpc.googlesyndication.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>tps.doubleverify.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>tpsc-ae1.doubleverify.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>udc.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ums.acuityplatform.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ups.analytics.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>us-u.openx.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>user-sync.fwmrm.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>usersync.getpublica.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ut.pubmatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>vop.sundaysky.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>wnsrvbjmeprtfrnfx.ay.delivery</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>workspace.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>wt.rqtrk.eu</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.apple.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.google-analytics.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.googleadservices.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.googletagmanager.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.googletagservices.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.gstatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.icloud.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.temu.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.youtube.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>x.bidswitch.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>yahoo-bidout-d.openx.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>yahoo-match.dotomi.com</span></td>
+        </tr>
+        
+      
+        
+        <tr>
+          <td class="provider-col">Yahoo</td>
+          <td class="phase-col">idle</td>
+          <td><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>66fba660e283c8e61784c8e057bf1842.safeframe.googlesyndication.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>a.tribalfusion.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>a1298.casalemedia.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>aa.agkn.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>aax-events-cell02-cf.us-west.3px.axp.amazon-adsystem.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ad.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ade.googlesyndication.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ads-img.mozilla.org</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ads.mountain.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ads.yieldmo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>adx01.groovinads.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>agen-assets.ftstatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ajs-assets.ftstatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>api.taboola.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>b1sync.outbrain.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>bcp.crwdcntrl.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>beacon-sjc4.rubiconproject.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>bh.contextweb.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>bofa.demdex.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>c.amazon-adsystem.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>c.betrad.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>c.evidon.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>c.mountain.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>c.pm-serv.co</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>c1.adform.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>c21lg-d.media.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>c2shb-oao.ssp.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cadmus2.script.ac</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cdn.clinch.co</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cdn.doubleverify.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cdn.flashtalking.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>choices.trustarc.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>choices.truste.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cm-mx.advolve.io</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cm.adform.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cm.adgrx.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cm.g.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cm.pubeasy.io</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cms.quantserve.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cookies.nextmillmedia.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>crb.kargo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cs.admanmedia.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cs.media.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cs.minutemedia-prebid.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cs.yellowblue.io</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>csync.loopme.me</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ct.pinterest.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>d.adroll.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>d.agkn.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>d37unsldgykj8z.cloudfront.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>d9.flashtalking.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>difw.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>dis.criteo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>display.bidder.taboola.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>dpm.demdex.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>dsp-cookie.adfarm1.adition.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>dsum-sec.casalemedia.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>dt.adsafeprotected.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>e.serverbid.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>eb2.3lift.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>enduser.adsrvr.org</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ep1.adtrafficquality.google</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ep2.adtrafficquality.google</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>events.mountain.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>evt.openwebmp.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>exchange.kueezrtb.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>exchange.mediavine.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>fastlane.rubiconproject.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>fw.adsafeprotected.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>geo.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>googleads.g.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>googleads4.g.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>grid-bidder.criteo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>gs.mountain.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>gw.geoedge.be</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>hblg-nv.media.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>hblg.media.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>hbopenbid.pubmatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>hbx.media.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>htlb.casalemedia.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>i.liadm.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ib.3lift.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ib.adnxs.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>id.rlcdn.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>id5-sync.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>idsync.rlcdn.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>images-na.ssl-images-amazon.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>images.taboola.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>img-cdn.clinch.co</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>js-sec.indexww.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>jsconfig.adsafeprotected.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>k8s1-event-tracker-ny.lb.indexww.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>l.evidon.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>loadus.exelator.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>m.media-amazon.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>mail.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>match.adsby.bidtheatre.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>match.adsrvr.org</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>match.deepintent.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>match.prod.bidr.io</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>match.sharethrough.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>match.sync.ad.cpe.dotomi.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>mozilla-ohttp.fastly-edge.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>navvy.media.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>nrb.ybp.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>onetag-sys.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ox-rtb-us-west1.openx.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pagead2.googlesyndication.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>partners.tremorhub.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pbd.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pbs-poki-us.ay.delivery</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pbs-yahoo-us.ay.delivery</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pbs.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pixel-sync.sitescout.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pixel.adsafeprotected.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pixel.rubiconproject.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pixel.tapad.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>prebid-s2s.media.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>prebid-server.rubiconproject.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>prebid.media.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>public-prod-dspcookiematching.dmxleo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>push.services.mozilla.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pxl.iqm.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>qsearch-a.akamaihd.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>qvdt3feo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>rbp.mxptint.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>realtime.clinch.co</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>rt.marphezis.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>rtb-csync.smartadserver.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>rtb.mfadsrvr.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>rtb.openx.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>rtb0.doubleverify.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>rubicon-match.dotomi.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>rumcdn.geoedge.be</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>s.ad.smaato.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>s.amazon-adsystem.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>s.seedtag.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>s.tpcserve.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>s.yimg.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>s0.2mdn.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>secure-assets.rubiconproject.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>secure.flashtalking.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>securepubads.g.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>servedby.flashtalking.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sq-tungsten-ts.amazon-adsystem.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ssbsync.smartadserver.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ssp-sync.criteo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ssum-sec.casalemedia.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ssum.casalemedia.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>static.adsafeprotected.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync-tm.everesttech.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.1rx.io</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.a-mo.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.aniview.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.bfmio.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.cootlogix.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.ex.co</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.outbrain.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.resetdigital.co</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.springserve.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.srv.stackadapt.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.taboola.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.targeting.unrulymedia.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.teads.tv</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>t.mountain.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>tlx.3lift.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>token.rubiconproject.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>tpc.googlesyndication.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>tps.doubleverify.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>tpsc-ue1.doubleverify.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>tpt.dotomi.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>tpt.mediaplex.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>tr.blismedia.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>tracker.samplicio.us</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>trk.clinch.co</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ts.amazon-adsystem.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>tungsten-service.prod.na.adsqtungsten.a9.amazon.dev</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>um.simpli.fi</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ums.acuityplatform.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ups.analytics.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>us-api.taboola.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>us-east-1.event.prod.bidr.io</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>us-u.openx.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>us-west4-production-rtb-wins.openwebmp.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>use3-cs.amx1.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>user-sync.fwmrm.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>usr.undertone.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>vam-bid.adsrvr.org</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>vfw.amazon-adsystem.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>visitor.omnitagjs.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>wa2-bid.adsrvr.org</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>warp.media.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.btd-cmh.tq-tungsten.com</span></td>
+        </tr>
+        
+      
+        
+        <tr>
+          <td class="provider-col">Yahoo</td>
+          <td class="phase-col">active usage</td>
+          <td><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>api.github.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>api.taboola.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>data.mail.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>difw.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ecp.yusercontent.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>geo.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>mail.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>s.yimg.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sb.scorecardresearch.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>udc.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>us-api.taboola.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.google-analytics.com</span></td>
+        </tr>
+        
+      
+        
+        <tr>
+          <td class="provider-col">Yahoo</td>
+          <td class="phase-col">tracker test</td>
+          <td><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>2507573.fls.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>a50ff6f00c0e011d72c18854fcf1099f.safeframe.googlesyndication.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>aax-eu.amazon-adsystem.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>accounts.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ad.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ad.turn.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ads-img.mozilla.org</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ads.pubmatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ads.scorecardresearch.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ads.yieldmo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>adservice.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ag.gbc.criteo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>analytics.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>api.taboola.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>appleid.apple.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>appleid.cdn-apple.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>b1sync.zemanta.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>bh.contextweb.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>bpi.rtactivate.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>bttrack.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>c1.adform.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>c21lg-d.media.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>c2shb-oao.ssp.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cadmus.script.ac</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>capi.connatix.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cdn.doubleverify.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cdn.js7k.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cdn.taboola.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ce.lijit.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cgrid.criteo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>client.hsprotect.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cm.g.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>collector-pxzc5j78di.hsprotect.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>contextual.media.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>crb.kargo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>crcldu.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>creativecdn.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cs.admanmedia.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>cs.media.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>csp.withgoogle.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>csync.loopme.me</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ct.pinterest.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>detectportal.firefox.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>difw.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>dis.criteo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>display.bidder.taboola.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>dmp.brand-display.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>dnacdn.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>dsum-sec.casalemedia.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>dt.adsafeprotected.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>dtproxy5.yahoo.nc.clients.ipqs.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>eb2.3lift.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>edge-mcdn.secure.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>encrypted-tbn0.gstatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ep1.adtrafficquality.google</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ep2.adtrafficquality.google</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>et-c-ash.33across.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>eus.rubiconproject.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>exchange.kueezrtb.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>exchange.mediavine.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>fastlane.rubiconproject.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>feedbackws.icloud.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>fonts.googleapis.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>fonts.gstatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>fw.adsafeprotected.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>gat.da1.us.criteo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>gem.gbc.criteo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>geo.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>googleads.g.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>googleads4.g.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>gpt.mail.yahoo.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>grid-bidder.criteo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>grid-mercury.criteo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>guce.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>gum.criteo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>hb.trustedstack.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>hbopenbid.pubmatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>hbx.media.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>htlb.casalemedia.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>i.clean.gg</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>i.liadm.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ib.3lift.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ib.adnxs.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>id.rlcdn.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>idmsa.apple.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>idsync.rlcdn.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>idx.liadm.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>iframe.hsprotect.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>image4.pubmatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>image6.pubmatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>image8.pubmatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>img.youtube.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>incoming.telemetry.mozilla.org</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>jadserve.postrelease.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>jsapi.login.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>jsconfig.adsafeprotected.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>lg1.hb.trustedstack.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>lh3.googleusercontent.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>location.services.mozilla.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>login.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>logincdn.msftauth.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>mail.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>mail.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>match.adsby.bidtheatre.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>match.adsrvr.org</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>match.deepintent.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>match.sharethrough.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>media-net-cookie-sync.claritas.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>medianet-match.dotomi.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>mozilla-ohttp.fastly-edge.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>noa.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ogads-pa.clients6.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>opus.analytics.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>outlook.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>p.rfihub.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pagead2.googlesyndication.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>partners.tremorhub.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pbd.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pbs-cs.minutemedia-prebid.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pbs-yahoo-us.ay.delivery</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pbs.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pixel-us-east.rubiconproject.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pixel.adsafeprotected.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pixel.rubiconproject.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pixel.tapad.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>play.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pn.ybp.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>prebid-server.rubiconproject.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>prebid.media.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>push.services.mozilla.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>pxl.iqm.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>qvdt3feo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>r.bidswitch.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>rp.liadm.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>rtb-csync.smartadserver.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>rtb.mfadsrvr.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>rtb.openx.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>rtb0.doubleverify.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>s.ad.smaato.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>s.amazon-adsystem.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>s.company-target.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>s.seedtag.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>s.yimg.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>s0.2mdn.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>safebrowsing.googleapis.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sb.scorecardresearch.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>secure-assets.rubiconproject.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>secure.adnxs.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>securepubads.g.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>setup.icloud.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sid.storygize.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>signal-service.pbs.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>signaler-pa.googleapis.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>simage2.pubmatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ssbsync.smartadserver.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ssc-cms.33across.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ssl.google-analytics.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ssl.gstatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ssp-sync.criteo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ssp.disqus.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ssum-sec.casalemedia.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>static.adsafeprotected.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>stats.g.doubleclick.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>stk.hsprotect.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>storage.googleapis.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync-pm.ads.yieldmo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync-tm.everesttech.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.1rx.io</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.aniview.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.bfmio.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.ipredictive.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.kueezrtb.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.outbrain.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.resetdigital.co</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.srv.stackadapt.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.taboola.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sync.targeting.unrulymedia.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>t.adx.opera.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>t.oa.opera.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>tlx.3lift.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>token.rubiconproject.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>tpc.googlesyndication.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>tps.doubleverify.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>tpsc-ae1.doubleverify.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>udc.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ums.acuityplatform.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ups.analytics.yahoo.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>us-u.openx.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>user-sync.fwmrm.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>usersync.getpublica.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ut.pubmatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>vop.sundaysky.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>wnsrvbjmeprtfrnfx.ay.delivery</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>workspace.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>wt.rqtrk.eu</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.apple.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.google-analytics.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.googleadservices.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.googletagmanager.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.googletagservices.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.gstatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.icloud.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.temu.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.youtube.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>x.bidswitch.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>yahoo-bidout-d.openx.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>yahoo-match.dotomi.com</span></td>
+        </tr>
+        
+      
+    
+      
+        
+        <tr>
+          <td class="provider-col">Protonmail</td>
+          <td class="phase-col">account creation</td>
+          <td><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>5d5e408adfd7.w.hcaptcha.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>api.hcaptcha.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>csp.withgoogle.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>detectportal.firefox.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>encrypted-tbn0.gstatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>incoming.telemetry.mozilla.org</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>js.chargebee.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>js.stripe.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>mozilla-ohttp.fastly-edge.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>newassets.hcaptcha.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ogads-pa.clients6.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>play.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>proton.chargebee.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>proton.chargebeestaticv2.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>push.services.mozilla.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>sentry.io</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.googleadservices.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.googletagmanager.com</span></td>
+        </tr>
+        
+      
+        
+        <tr>
+          <td class="provider-col">Protonmail</td>
+          <td class="phase-col">idle</td>
+          <td><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>aus5.mozilla.org</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>content-signature-2.cdn.mozilla.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>detectportal.firefox.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>firefox-settings-attachments.cdn.mozilla.net</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>firefox.settings.services.mozilla.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>incoming.telemetry.mozilla.org</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>mozilla-ohttp.fastly-edge.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>push.services.mozilla.com</span></td>
+        </tr>
+        
+      
+        
+        <tr>
+          <td class="provider-col">Protonmail</td>
+          <td class="phase-col">active usage</td>
+          <td><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>push.services.mozilla.com</span></td>
+        </tr>
+        
+      
+        
+        <tr>
+          <td class="provider-col">Protonmail</td>
+          <td class="phase-col">tracker test</td>
+          <td><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>mozilla-ohttp.fastly-edge.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>push.services.mozilla.com</span></td>
+        </tr>
+        
+      
+    
+      
+        
+        <tr>
+          <td class="provider-col">Tutanota</td>
+          <td class="phase-col">account creation</td>
+          <td><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>app.tuta.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>csp.withgoogle.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>encrypted-tbn0.gstatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>fonts.gstatic.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>lh3.googleusercontent.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>ogads-pa.clients6.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>play.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>tuta.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>w16.api.tuta.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.google.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.googleadservices.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.googletagmanager.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>www.gstatic.com</span></td>
+        </tr>
+        
+      
+        
+        <tr>
+          <td class="provider-col">Tutanota</td>
+          <td class="phase-col">idle</td>
+          <td><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>app.tuta.com</span></td>
+        </tr>
+        
+      
+        
+        <tr>
+          <td class="provider-col">Tutanota</td>
+          <td class="phase-col">active usage</td>
+          <td><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>app.tuta.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>w16.api.tuta.com</span></td>
+        </tr>
+        
+      
+        
+        <tr>
+          <td class="provider-col">Tutanota</td>
+          <td class="phase-col">tracker test</td>
+          <td><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>app.tuta.com</span><span class="domain-entry"><span class="cat-dot cat-unknown_third_party"></span>w16.api.tuta.com</span></td>
+        </tr>
+        
+      
+    
+    </tbody>
+  </table>
+
+  <!-- PROVIDER PROFILES -->
+  <div class="section-title" id="provider-profiles">Provider Profiles</div>
+  <div class="two-col">
   
+  <div class="provider-card">
+    <h3>Gmail</h3>
     
+      
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:#555;margin-top:8px;margin-bottom:4px;">account creation</div>
+      <div class="stat-row"><span class="stat-label">Total requests</span><span class="stat-value">498</span></div>
+      <div class="stat-row"><span class="stat-label">Unique domains</span><span class="stat-value">30</span></div>
+      <div class="stat-row"><span class="stat-label">Third-party domains</span><span class="stat-value">5</span></div>
+      <div class="stat-row"><span class="stat-label">Email detections</span><span class="stat-value">0</span></div>
+      <div class="stat-row"><span class="stat-label">Browser noise filtered</span><span class="stat-value">60</span></div>
+      
+    
+      
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:#555;margin-top:8px;margin-bottom:4px;">idle</div>
+      <div class="stat-row"><span class="stat-label">Total requests</span><span class="stat-value">1157</span></div>
+      <div class="stat-row"><span class="stat-label">Unique domains</span><span class="stat-value">38</span></div>
+      <div class="stat-row"><span class="stat-label">Third-party domains</span><span class="stat-value">10</span></div>
+      <div class="stat-row"><span class="stat-label">Email detections</span><span class="stat-value">0</span></div>
+      <div class="stat-row"><span class="stat-label">Browser noise filtered</span><span class="stat-value">74</span></div>
+      
+    
+      
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:#555;margin-top:8px;margin-bottom:4px;">active usage</div>
+      <div class="stat-row"><span class="stat-label">Total requests</span><span class="stat-value">1370</span></div>
+      <div class="stat-row"><span class="stat-label">Unique domains</span><span class="stat-value">52</span></div>
+      <div class="stat-row"><span class="stat-label">Third-party domains</span><span class="stat-value">22</span></div>
+      <div class="stat-row"><span class="stat-label">Email detections</span><span class="stat-value">0</span></div>
+      <div class="stat-row"><span class="stat-label">Browser noise filtered</span><span class="stat-value">0</span></div>
+      
+    
+      
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:#555;margin-top:8px;margin-bottom:4px;">tracker test</div>
+      <div class="stat-row"><span class="stat-label">Total requests</span><span class="stat-value">1084</span></div>
+      <div class="stat-row"><span class="stat-label">Unique domains</span><span class="stat-value">40</span></div>
+      <div class="stat-row"><span class="stat-label">Third-party domains</span><span class="stat-value">13</span></div>
+      <div class="stat-row"><span class="stat-label">Email detections</span><span class="stat-value">8</span></div>
+      <div class="stat-row"><span class="stat-label">Browser noise filtered</span><span class="stat-value">111</span></div>
+      
+    
+  </div>
   
-
-
-<h2>Tutanota: Third-Party Domains by Category</h2>
-
-
+  <div class="provider-card">
+    <h3>Yahoo</h3>
+    
+      
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:#555;margin-top:8px;margin-bottom:4px;">account creation</div>
+      <div class="stat-row"><span class="stat-label">Total requests</span><span class="stat-value">1165</span></div>
+      <div class="stat-row"><span class="stat-label">Unique domains</span><span class="stat-value">216</span></div>
+      <div class="stat-row"><span class="stat-label">Third-party domains</span><span class="stat-value">208</span></div>
+      <div class="stat-row"><span class="stat-label">Email detections</span><span class="stat-value">0</span></div>
+      <div class="stat-row"><span class="stat-label">Browser noise filtered</span><span class="stat-value">0</span></div>
+      
+    
+      
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:#555;margin-top:8px;margin-bottom:4px;">idle</div>
+      <div class="stat-row"><span class="stat-label">Total requests</span><span class="stat-value">823</span></div>
+      <div class="stat-row"><span class="stat-label">Unique domains</span><span class="stat-value">193</span></div>
+      <div class="stat-row"><span class="stat-label">Third-party domains</span><span class="stat-value">193</span></div>
+      <div class="stat-row"><span class="stat-label">Email detections</span><span class="stat-value">0</span></div>
+      <div class="stat-row"><span class="stat-label">Browser noise filtered</span><span class="stat-value">0</span></div>
+      
+    
+      
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:#555;margin-top:8px;margin-bottom:4px;">active usage</div>
+      <div class="stat-row"><span class="stat-label">Total requests</span><span class="stat-value">131</span></div>
+      <div class="stat-row"><span class="stat-label">Unique domains</span><span class="stat-value">12</span></div>
+      <div class="stat-row"><span class="stat-label">Third-party domains</span><span class="stat-value">12</span></div>
+      <div class="stat-row"><span class="stat-label">Email detections</span><span class="stat-value">0</span></div>
+      <div class="stat-row"><span class="stat-label">Browser noise filtered</span><span class="stat-value">0</span></div>
+      
+    
+      
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:#555;margin-top:8px;margin-bottom:4px;">tracker test</div>
+      <div class="stat-row"><span class="stat-label">Total requests</span><span class="stat-value">1165</span></div>
+      <div class="stat-row"><span class="stat-label">Unique domains</span><span class="stat-value">216</span></div>
+      <div class="stat-row"><span class="stat-label">Third-party domains</span><span class="stat-value">208</span></div>
+      <div class="stat-row"><span class="stat-label">Email detections</span><span class="stat-value">0</span></div>
+      <div class="stat-row"><span class="stat-label">Browser noise filtered</span><span class="stat-value">0</span></div>
+      
+    
+  </div>
   
-
+  <div class="provider-card">
+    <h3>Protonmail</h3>
+    
+      
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:#555;margin-top:8px;margin-bottom:4px;">account creation</div>
+      <div class="stat-row"><span class="stat-label">Total requests</span><span class="stat-value">321</span></div>
+      <div class="stat-row"><span class="stat-label">Unique domains</span><span class="stat-value">25</span></div>
+      <div class="stat-row"><span class="stat-label">Third-party domains</span><span class="stat-value">19</span></div>
+      <div class="stat-row"><span class="stat-label">Email detections</span><span class="stat-value">0</span></div>
+      <div class="stat-row"><span class="stat-label">Browser noise filtered</span><span class="stat-value">0</span></div>
+      
+    
+      
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:#555;margin-top:8px;margin-bottom:4px;">idle</div>
+      <div class="stat-row"><span class="stat-label">Total requests</span><span class="stat-value">139</span></div>
+      <div class="stat-row"><span class="stat-label">Unique domains</span><span class="stat-value">11</span></div>
+      <div class="stat-row"><span class="stat-label">Third-party domains</span><span class="stat-value">8</span></div>
+      <div class="stat-row"><span class="stat-label">Email detections</span><span class="stat-value">0</span></div>
+      <div class="stat-row"><span class="stat-label">Browser noise filtered</span><span class="stat-value">0</span></div>
+      
+    
+      
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:#555;margin-top:8px;margin-bottom:4px;">active usage</div>
+      <div class="stat-row"><span class="stat-label">Total requests</span><span class="stat-value">120</span></div>
+      <div class="stat-row"><span class="stat-label">Unique domains</span><span class="stat-value">4</span></div>
+      <div class="stat-row"><span class="stat-label">Third-party domains</span><span class="stat-value">1</span></div>
+      <div class="stat-row"><span class="stat-label">Email detections</span><span class="stat-value">0</span></div>
+      <div class="stat-row"><span class="stat-label">Browser noise filtered</span><span class="stat-value">0</span></div>
+      
+    
+      
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:#555;margin-top:8px;margin-bottom:4px;">tracker test</div>
+      <div class="stat-row"><span class="stat-label">Total requests</span><span class="stat-value">52</span></div>
+      <div class="stat-row"><span class="stat-label">Unique domains</span><span class="stat-value">3</span></div>
+      <div class="stat-row"><span class="stat-label">Third-party domains</span><span class="stat-value">2</span></div>
+      <div class="stat-row"><span class="stat-label">Email detections</span><span class="stat-value">0</span></div>
+      <div class="stat-row"><span class="stat-label">Browser noise filtered</span><span class="stat-value">0</span></div>
+      
+    
+  </div>
   
-
+  <div class="provider-card">
+    <h3>Tutanota</h3>
+    
+      
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:#555;margin-top:8px;margin-bottom:4px;">account creation</div>
+      <div class="stat-row"><span class="stat-label">Total requests</span><span class="stat-value">360</span></div>
+      <div class="stat-row"><span class="stat-label">Unique domains</span><span class="stat-value">13</span></div>
+      <div class="stat-row"><span class="stat-label">Third-party domains</span><span class="stat-value">13</span></div>
+      <div class="stat-row"><span class="stat-label">Email detections</span><span class="stat-value">3</span></div>
+      <div class="stat-row"><span class="stat-label">Browser noise filtered</span><span class="stat-value">37</span></div>
+      
+    
+      
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:#555;margin-top:8px;margin-bottom:4px;">idle</div>
+      <div class="stat-row"><span class="stat-label">Total requests</span><span class="stat-value">40</span></div>
+      <div class="stat-row"><span class="stat-label">Unique domains</span><span class="stat-value">1</span></div>
+      <div class="stat-row"><span class="stat-label">Third-party domains</span><span class="stat-value">1</span></div>
+      <div class="stat-row"><span class="stat-label">Email detections</span><span class="stat-value">1</span></div>
+      <div class="stat-row"><span class="stat-label">Browser noise filtered</span><span class="stat-value">7</span></div>
+      
+    
+      
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:#555;margin-top:8px;margin-bottom:4px;">active usage</div>
+      <div class="stat-row"><span class="stat-label">Total requests</span><span class="stat-value">63</span></div>
+      <div class="stat-row"><span class="stat-label">Unique domains</span><span class="stat-value">2</span></div>
+      <div class="stat-row"><span class="stat-label">Third-party domains</span><span class="stat-value">2</span></div>
+      <div class="stat-row"><span class="stat-label">Email detections</span><span class="stat-value">3</span></div>
+      <div class="stat-row"><span class="stat-label">Browser noise filtered</span><span class="stat-value">0</span></div>
+      
+    
+      
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.3px;color:#555;margin-top:8px;margin-bottom:4px;">tracker test</div>
+      <div class="stat-row"><span class="stat-label">Total requests</span><span class="stat-value">80</span></div>
+      <div class="stat-row"><span class="stat-label">Unique domains</span><span class="stat-value">2</span></div>
+      <div class="stat-row"><span class="stat-label">Third-party domains</span><span class="stat-value">2</span></div>
+      <div class="stat-row"><span class="stat-label">Email detections</span><span class="stat-value">3</span></div>
+      <div class="stat-row"><span class="stat-label">Browser noise filtered</span><span class="stat-value">0</span></div>
+      
+    
+  </div>
   
+  </div>
 
-  
+  <!-- TRACKER TEST -->
+  <div class="section-title" id="tracker-test">Tracker Test Results</div>
+  <p class="note">A web bug (canary token tracking pixel) was embedded in an email and opened in each provider's client. The source IP that triggered the token reveals whether the provider proxies external image requests.</p>
+  <table>
+    <thead><tr>
+      <th>Provider</th>
+      <th>Token Fired</th>
+      <th>Source IP Type</th>
+      <th>Interpretation</th>
+    </tr></thead>
+    <tbody>
+    <tr>
+      <td style="font-weight:600;">Gmail</td>
+      <td><span class="badge badge-green">Yes</span></td>
+      <td>74.125.215.66 — Google Image Proxy</td>
+      <td style="text-align:left;">Gmail fetched the image server-side via GoogleImageProxy. User IP not exposed to tracker. Google gains visibility into all external image URLs.</td>
+    </tr>
+    <tr>
+      <td style="font-weight:600;">Outlook</td>
+      <td><span class="badge badge-gray">Pending</span></td>
+      <td>—</td>
+      <td style="text-align:left;">—</td>
+    </tr>
+    <tr>
+      <td style="font-weight:600;">ProtonMail</td>
+      <td><span class="badge badge-gray">Pending</span></td>
+      <td>—</td>
+      <td style="text-align:left;">—</td>
+    </tr>
+    <tr>
+      <td style="font-weight:600;">Tutanota</td>
+      <td><span class="badge badge-gray">Pending</span></td>
+      <td>—</td>
+      <td style="text-align:left;">—</td>
+    </tr>
+    </tbody>
+  </table>
 
-
-  <p class="missing">No data collected yet.</p>
-
-
-
-<h2>Encryption Verdicts</h2>
-<table>
-  <tr>
-    <th>Provider</th>
-    <th>Phase</th>
-    <th>Verdict</th>
-  </tr>
-  
+  <!-- ENCRYPTION -->
+  <div class="section-title" id="encryption">Encryption Assessment</div>
+  <p class="note">Shannon entropy analysis of message content in active_usage captures. High entropy suggests encrypted content; low entropy suggests plaintext.</p>
+  <table>
+    <thead><tr><th>Provider</th><th>Phase</th><th>Verdict</th></tr></thead>
+    <tbody>
     
-      
     
-      
-    
-      
-    
-      
-    
-  
-    
-      
-    
-      
-    
-      
-    
-      
-    
-  
-    
-      
-    
-      
-    
-      
       <tr>
-        <td>Protonmail</td>
+        <td style="font-weight:600;text-transform:capitalize;">yahoo</td>
         <td>Active Usage</td>
-        <td class="verdict-good">
-          Message content appears end-to-end encrypted via PGP.
-        </td>
+        <td class="verdict-bad">Message content transmitted without end-to-end encryption.</td>
       </tr>
-      
     
-      
+      <tr>
+        <td style="font-weight:600;text-transform:capitalize;">protonmail</td>
+        <td>Active Usage</td>
+        <td class="verdict-good">Message content appears end-to-end encrypted via PGP.</td>
+      </tr>
     
-  
     
-      
-    
-      
-    
-      
-    
-      
-    
-  
-</table>
+    </tbody>
+  </table>
 
+  <!-- LIMITATIONS -->
+  <div class="section-title" id="limitations">Methodology Limitations</div>
+  <div class="finding-box neutral">
+    <div class="finding-label">Email leak detector scope</div>
+    The classifier scans only the first 500 characters of each request body. Email addresses appearing beyond this limit are not detected, meaning the reported counts may be undercounts. Additionally, the detector matches any email-like pattern, not specifically the test account address, and does not distinguish between first-party and third-party destinations — manual verification of all flagged detections is required.
+  </div>
+  <div class="finding-box neutral">
+    <div class="finding-label">VM snapshot isolation</div>
+    Each experiment was run on a restored VM snapshot to ensure clean state. However, the VM used a shared network connection. Traffic from other devices on the same network is not captured, and the VM's IP address could in theory be linked to prior sessions by providers.
+  </div>
+  <div class="finding-box neutral">
+    <div class="finding-label">Browser noise filtering</div>
+    Firefox background requests were filtered using a static domain list. This list may be incomplete — some Firefox traffic may remain in captures for providers whose experiments were run before the filter was implemented. ProtonMail idle captures in particular may include unfiltered browser noise.
+  </div>
+  <div class="finding-box neutral">
+    <div class="finding-label">Single experiment per phase</div>
+    Each phase was run once per provider. Results represent a single observation and may not reflect typical behavior across multiple sessions or over time.
+  </div>
+
+  <div class="footer">Generated by email-privacy-tool &nbsp;·&nbsp; Northwestern University CS &nbsp;·&nbsp; May 31, 2026 at 09:32 PM</div>
 </body>
 </html>
